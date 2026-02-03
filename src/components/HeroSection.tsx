@@ -1,9 +1,13 @@
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, BookOpen, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 import heroImage from "@/assets/hero-placement.jpg";
 
 export const HeroSection = () => {
+  const { user } = useAuth();
+
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href);
     if (element) {
@@ -96,25 +100,52 @@ export const HeroSection = () => {
             transition={{ delay: 0.6, duration: 0.6 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button
-              variant="hero"
-              size="xl"
-              onClick={() => scrollToSection("#modules")}
-              className="group min-w-[200px]"
-            >
-              <BookOpen className="w-5 h-5" />
-              Start Preparation
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button
-              variant="heroOutline"
-              size="xl"
-              onClick={() => scrollToSection("#modules")}
-              className="min-w-[200px]"
-            >
-              <Trophy className="w-5 h-5" />
-              Take a Mock Test
-            </Button>
+            {user ? (
+              <>
+                <Button
+                  variant="hero"
+                  size="xl"
+                  onClick={() => scrollToSection("#modules")}
+                  className="group min-w-[200px]"
+                >
+                  <BookOpen className="w-5 h-5" />
+                  Continue Learning
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                <Button
+                  variant="heroOutline"
+                  size="xl"
+                  onClick={() => scrollToSection("#modules")}
+                  className="min-w-[200px]"
+                >
+                  <Trophy className="w-5 h-5" />
+                  Take a Mock Test
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/auth">
+                  <Button
+                    variant="hero"
+                    size="xl"
+                    className="group min-w-[200px]"
+                  >
+                    <BookOpen className="w-5 h-5" />
+                    Start Preparation
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <Button
+                  variant="heroOutline"
+                  size="xl"
+                  onClick={() => scrollToSection("#modules")}
+                  className="min-w-[200px]"
+                >
+                  <Trophy className="w-5 h-5" />
+                  Take a Mock Test
+                </Button>
+              </>
+            )}
           </motion.div>
 
           {/* Stats */}

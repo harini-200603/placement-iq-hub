@@ -1,8 +1,16 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, GraduationCap } from "lucide-react";
+import { Menu, X, GraduationCap, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navItems = [
   { label: "Home", href: "#home" },
@@ -15,6 +23,8 @@ const navItems = [
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href);
@@ -22,6 +32,11 @@ export const Header = () => {
       element.scrollIntoView({ behavior: "smooth" });
     }
     setIsMenuOpen(false);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth");
   };
 
   return (
@@ -51,21 +66,44 @@ export const Header = () => {
             ))}
           </nav>
 
-          {/* Auth Buttons */}
+          {/* Auth Buttons / User Menu */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button
-              variant="ghost"
-              onClick={() => scrollToSection("#auth")}
-              className="text-foreground"
-            >
-              Sign In
-            </Button>
-            <Button
-              variant="default"
-              onClick={() => scrollToSection("#auth")}
-            >
-              Sign Up
-            </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="gap-2">
+                    <User className="w-4 h-4" />
+                    <span className="max-w-[120px] truncate">
+                      {user.user_metadata?.full_name || user.email?.split("@")[0]}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem className="text-muted-foreground text-sm">
+                    {user.email}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="text-destructive focus:text-destructive cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Link to="/auth">
+                  <Button variant="ghost" className="text-foreground">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/auth">
+                  <Button variant="default">Sign Up</Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -102,21 +140,35 @@ export const Header = () => {
                   {item.label}
                 </button>
               ))}
-              <div className="flex gap-3 mt-4 pt-4 border-t border-border">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => scrollToSection("#auth")}
-                >
-                  Sign In
-                </Button>
-                <Button
-                  variant="default"
-                  className="flex-1"
-                  onClick={() => scrollToSection("#auth")}
-                >
-                  Sign Up
-                </Button>
+              <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-border">
+                {user ? (
+                  <>
+                    <div className="px-4 py-2 text-sm text-muted-foreground">
+                      Signed in as {user.email}
+                    </div>
+                    <Button
+                      variant="destructive"
+                      onClick={handleSignOut}
+                      className="w-full"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <div className="flex gap-3">
+                    <Link to="/auth" className="flex-1">
+                      <Button variant="outline" className="w-full">
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link to="/auth" className="flex-1">
+                      <Button variant="default" className="w-full">
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </div>
+                )}
               </div>
             </nav>
           </motion.div>
