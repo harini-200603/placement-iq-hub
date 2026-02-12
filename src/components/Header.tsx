@@ -14,7 +14,6 @@ import {
 
 const navItems = [
   { label: "Home", href: "/" },
-  { label: "Modules", href: "/modules" },
   { label: "Dashboard", href: "/dashboard", authRequired: true },
 ];
 
