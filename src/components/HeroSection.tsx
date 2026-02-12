@@ -8,13 +8,6 @@ import heroImage from "@/assets/hero-placement.jpg";
 export const HeroSection = () => {
   const { user } = useAuth();
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <section
       id="home"
@@ -102,25 +95,27 @@ export const HeroSection = () => {
           >
             {user ? (
               <>
-                <Button
-                  variant="hero"
-                  size="xl"
-                  onClick={() => scrollToSection("#modules")}
-                  className="group min-w-[200px]"
-                >
-                  <BookOpen className="w-5 h-5" />
-                  Continue Learning
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-                <Button
-                  variant="heroOutline"
-                  size="xl"
-                  onClick={() => scrollToSection("#modules")}
-                  className="min-w-[200px]"
-                >
-                  <Trophy className="w-5 h-5" />
-                  Take a Mock Test
-                </Button>
+                <Link to="/dashboard">
+                  <Button
+                    variant="hero"
+                    size="xl"
+                    className="group min-w-[200px]"
+                  >
+                    <BookOpen className="w-5 h-5" />
+                    Continue Learning
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <Link to="/modules">
+                  <Button
+                    variant="heroOutline"
+                    size="xl"
+                    className="min-w-[200px]"
+                  >
+                    <Trophy className="w-5 h-5" />
+                    Take a Mock Test
+                  </Button>
+                </Link>
               </>
             ) : (
               <>
@@ -135,15 +130,16 @@ export const HeroSection = () => {
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Button
-                  variant="heroOutline"
-                  size="xl"
-                  onClick={() => scrollToSection("#modules")}
-                  className="min-w-[200px]"
-                >
-                  <Trophy className="w-5 h-5" />
-                  Take a Mock Test
-                </Button>
+                <Link to="/modules">
+                  <Button
+                    variant="heroOutline"
+                    size="xl"
+                    className="min-w-[200px]"
+                  >
+                    <Trophy className="w-5 h-5" />
+                    Take a Mock Test
+                  </Button>
+                </Link>
               </>
             )}
           </motion.div>
