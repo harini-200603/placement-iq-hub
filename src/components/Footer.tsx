@@ -12,11 +12,11 @@ import {
 
 const footerLinks = {
   product: [
-    { label: "Aptitude", href: "#modules" },
-    { label: "Verbal Ability", href: "#modules" },
-    { label: "Technical Prep", href: "#modules" },
-    { label: "Mock Tests", href: "#modules" },
-    { label: "Interview Prep", href: "#modules" },
+    { label: "Aptitude", href: "/modules" },
+    { label: "Verbal Ability", href: "/modules" },
+    { label: "Technical Prep", href: "/modules" },
+    { label: "Mock Tests", href: "/modules" },
+    { label: "Interview Prep", href: "/modules" },
   ],
   company: [
     { label: "About Us", href: "#" },
@@ -85,12 +85,12 @@ export const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="text-primary-foreground/70 hover:text-accent transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

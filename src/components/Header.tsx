@@ -13,12 +13,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const navItems = [
-  { label: "Home", href: "#home" },
-  { label: "Aptitude", href: "#modules" },
-  { label: "Verbal", href: "#modules" },
-  { label: "Technical", href: "#modules" },
-  { label: "Mock Tests", href: "#modules" },
-  { label: "Interview Preparation", href: "#modules" },
+  { label: "Home", href: "/" },
+  { label: "Modules", href: "/modules" },
+  { label: "Dashboard", href: "/dashboard", authRequired: true },
 ];
 
 export const Header = () => {
@@ -26,13 +23,9 @@ export const Header = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-    setIsMenuOpen(false);
-  };
+  const filteredNav = navItems.filter(
+    (item) => !item.authRequired || user
+  );
 
   const handleSignOut = async () => {
     await signOut();
@@ -55,14 +48,14 @@ export const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
-            {navItems.map((item) => (
-              <button
+            {filteredNav.map((item) => (
+              <Link
                 key={item.label}
-                onClick={() => scrollToSection(item.href)}
+                to={item.href}
                 className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors duration-200 rounded-lg hover:bg-muted"
               >
                 {item.label}
-              </button>
+              </Link>
             ))}
           </nav>
 
@@ -131,14 +124,15 @@ export const Header = () => {
             className="lg:hidden border-t border-border bg-card"
           >
             <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
-              {navItems.map((item) => (
-                <button
+              {filteredNav.map((item) => (
+                <Link
                   key={item.label}
-                  onClick={() => scrollToSection(item.href)}
+                  to={item.href}
+                  onClick={() => setIsMenuOpen(false)}
                   className="px-4 py-3 text-left text-sm font-medium text-muted-foreground hover:text-primary hover:bg-muted rounded-lg transition-colors"
                 >
                   {item.label}
-                </button>
+                </Link>
               ))}
               <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-border">
                 {user ? (
