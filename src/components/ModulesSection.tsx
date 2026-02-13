@@ -8,6 +8,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const modules = [
   {
@@ -18,6 +19,7 @@ const modules = [
     color: "from-blue-500 to-blue-600",
     bgColor: "bg-blue-50",
     iconColor: "text-blue-600",
+    slug: "aptitude",
   },
   {
     icon: BookOpen,
@@ -27,6 +29,7 @@ const modules = [
     color: "from-emerald-500 to-emerald-600",
     bgColor: "bg-emerald-50",
     iconColor: "text-emerald-600",
+    slug: "verbal",
   },
   {
     icon: Code,
@@ -36,6 +39,7 @@ const modules = [
     color: "from-violet-500 to-violet-600",
     bgColor: "bg-violet-50",
     iconColor: "text-violet-600",
+    slug: "technical",
   },
   {
     icon: ClipboardList,
@@ -45,6 +49,7 @@ const modules = [
     color: "from-amber-500 to-amber-600",
     bgColor: "bg-amber-50",
     iconColor: "text-amber-600",
+    slug: "general",
   },
   {
     icon: Users,
@@ -54,10 +59,12 @@ const modules = [
     color: "from-rose-500 to-rose-600",
     bgColor: "bg-rose-50",
     iconColor: "text-rose-600",
+    slug: "interview",
   },
 ];
 
 export const ModulesSection = () => {
+  const navigate = useNavigate();
   return (
     <section id="modules" className="py-20 lg:py-28 bg-background">
       <div className="container mx-auto px-4 lg:px-8">
@@ -109,6 +116,7 @@ export const ModulesSection = () => {
                 <Button
                   variant="ghost"
                   className="p-0 h-auto text-primary font-semibold group/btn"
+                  onClick={() => navigate(`/mock-test/${module.slug}`)}
                 >
                   Start Learning
                   <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
