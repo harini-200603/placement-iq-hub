@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      mock_tests: {
+        Row: {
+          created_at: string
+          duration_minutes: number
+          id: string
+          module: string
+          title: string
+          total_questions: number
+        }
+        Insert: {
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          module: string
+          title: string
+          total_questions?: number
+        }
+        Update: {
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          module?: string
+          title?: string
+          total_questions?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -49,6 +76,92 @@ export type Database = {
           username?: string
         }
         Relationships: []
+      }
+      questions: {
+        Row: {
+          correct_option: string
+          created_at: string
+          difficulty: string
+          explanation: string | null
+          id: string
+          module: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question: string
+        }
+        Insert: {
+          correct_option: string
+          created_at?: string
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          module: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question: string
+        }
+        Update: {
+          correct_option?: string
+          created_at?: string
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          module?: string
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          question?: string
+        }
+        Relationships: []
+      }
+      test_attempts: {
+        Row: {
+          answers: Json
+          completed_at: string | null
+          created_at: string
+          id: string
+          mock_test_id: string | null
+          module: string
+          score: number
+          total_questions: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          mock_test_id?: string | null
+          module: string
+          score?: number
+          total_questions?: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          mock_test_id?: string | null
+          module?: string
+          score?: number
+          total_questions?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_attempts_mock_test_id_fkey"
+            columns: ["mock_test_id"]
+            isOneToOne: false
+            referencedRelation: "mock_tests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
