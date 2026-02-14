@@ -54,7 +54,7 @@ const MockTest = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes
+  const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes
   const [score, setScore] = useState(0);
 
   useEffect(() => {
@@ -77,9 +77,9 @@ const MockTest = () => {
       return;
     }
 
-    if (data && data.length >= 30) {
-      // Pick 30 random questions
-      const shuffled = [...data].sort(() => Math.random() - 0.5).slice(0, 30);
+    if (data && data.length >= 15) {
+      // Pick 15 random questions
+      const shuffled = [...data].sort(() => Math.random() - 0.5).slice(0, 15);
       setQuestions(shuffled);
       setLoading(false);
     } else {
@@ -99,7 +99,7 @@ const MockTest = () => {
         if (newData && newData.length > 0) {
           const shuffled = [...newData]
             .sort(() => Math.random() - 0.5)
-            .slice(0, 30);
+            .slice(0, 15);
           setQuestions(shuffled);
         }
       } catch (e) {
@@ -309,7 +309,7 @@ const MockTest = () => {
                 setSubmitted(false);
                 setAnswers({});
                 setCurrentIndex(0);
-                setTimeLeft(30 * 60);
+                setTimeLeft(15 * 60);
                 setScore(0);
                 fetchQuestions();
               }}

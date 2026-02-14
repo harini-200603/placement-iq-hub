@@ -116,7 +116,7 @@ export const ModulesSection = () => {
                 <Button
                   variant="ghost"
                   className="p-0 h-auto text-primary font-semibold group/btn"
-                  onClick={() => navigate(`/mock-test/${module.slug}`)}
+                  onClick={() => navigate(`/preparation/${module.slug}`)}
                 >
                   Start Learning
                   <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
