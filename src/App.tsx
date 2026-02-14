@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Modules from "./pages/Modules";
 import MockTest from "./pages/MockTest";
 import Preparation from "./pages/Preparation";
+import TopicContent from "./pages/TopicContent";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/modules" element={<Modules />} />
             <Route path="/preparation/:module" element={<Preparation />} />
+            <Route path="/topic/:module/:topic" element={<TopicContent />} />
             <Route path="/mock-test/:module" element={<MockTest />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

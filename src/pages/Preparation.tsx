@@ -197,7 +197,7 @@ const Preparation = () => {
                   key={topic.slug}
                   className="group hover:border-primary/50 transition-all cursor-pointer"
                   onClick={() =>
-                    navigate(`/mock-test/${module}?topic=${topic.slug}`)
+                    navigate(`/topic/${module}/${topic.slug}`)
                   }
                 >
                   <CardContent className="p-4 flex items-start gap-3">

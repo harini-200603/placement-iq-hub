@@ -20,6 +20,7 @@ import {
   Trophy,
   RotateCcw,
   Home,
+  Lightbulb,
 } from "lucide-react";
 
 interface Question {
@@ -54,8 +55,9 @@ const MockTest = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes
+  const [timeLeft, setTimeLeft] = useState(15 * 60);
   const [score, setScore] = useState(0);
+  const [showHint, setShowHint] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
@@ -311,6 +313,7 @@ const MockTest = () => {
                 setCurrentIndex(0);
                 setTimeLeft(15 * 60);
                 setScore(0);
+                setShowHint({});
                 fetchQuestions();
               }}
             >
@@ -407,6 +410,30 @@ const MockTest = () => {
                   );
                 })}
               </RadioGroup>
+
+              {/* Hint */}
+              {currentQ.explanation && (
+                <div className="mt-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowHint((prev) => ({ ...prev, [currentIndex]: !prev[currentIndex] }))}
+                    className="text-accent-foreground"
+                  >
+                    <Lightbulb className="w-4 h-4 mr-1 text-accent" />
+                    {showHint[currentIndex] ? "Hide Hint" : "Show Hint"}
+                  </Button>
+                  {showHint[currentIndex] && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      className="mt-2 p-3 bg-accent/10 rounded-lg text-sm text-muted-foreground border border-accent/20"
+                    >
+                      💡 {currentQ.explanation}
+                    </motion.div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
