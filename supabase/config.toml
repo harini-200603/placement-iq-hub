@@ -5,3 +5,12 @@ verify_jwt = false
 
 [functions.topic-chat]
 verify_jwt = false
+
+[functions.interview-hr]
+verify_jwt = false
+
+[functions.coding-problem]
+verify_jwt = false
+
+[functions.evaluate-code]
+verify_jwt = false

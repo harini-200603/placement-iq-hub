@@ -17,6 +17,9 @@ import {
   TrendingUp,
   Target,
   Layers,
+  Dumbbell,
+  Code2,
+  Mic,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
@@ -158,14 +161,40 @@ const Preparation = () => {
                 {topics.length} topics · Master each topic before the mock test
               </p>
             </div>
-            <Button
-              size="lg"
-              onClick={() => navigate(`/mock-test/${module}`)}
-              className="shrink-0"
-            >
-              <Play className="w-4 h-4 mr-2" />
-              Take Mock Test (15 Qs)
-            </Button>
+            <div className="flex gap-3 shrink-0 flex-wrap">
+              <Button
+                variant="outline"
+                onClick={() => navigate(`/practice/${module}`)}
+              >
+                <Dumbbell className="w-4 h-4 mr-2" />
+                Practice
+              </Button>
+              {module === "technical" && (
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/coding-practice")}
+                >
+                  <Code2 className="w-4 h-4 mr-2" />
+                  Coding Practice
+                </Button>
+              )}
+              {module === "interview" && (
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/interview-practice")}
+                >
+                  <Mic className="w-4 h-4 mr-2" />
+                  Interview Sim
+                </Button>
+              )}
+              <Button
+                size="lg"
+                onClick={() => navigate(`/mock-test/${module}`)}
+              >
+                <Play className="w-4 h-4 mr-2" />
+                Mock Test (15 Qs)
+              </Button>
+            </div>
           </div>
 
           <div className="relative max-w-md">

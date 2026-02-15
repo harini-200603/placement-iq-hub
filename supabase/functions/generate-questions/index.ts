@@ -17,17 +17,18 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
+    const currentYear = new Date().getFullYear();
     const modulePrompts: Record<string, string> = {
       aptitude:
-        "Generate placement aptitude MCQ questions covering quantitative aptitude, logical reasoning, data interpretation, number series, percentages, profit/loss, time & work, permutations, probability.",
+        `Generate placement aptitude MCQ questions for ${currentYear} campus placements covering quantitative aptitude, logical reasoning, data interpretation, number series, percentages, profit/loss, time & work, permutations, probability. Reflect the latest ${currentYear} placement exam patterns from TCS, Infosys, Wipro, Cognizant, Accenture.`,
       verbal:
-        "Generate placement verbal ability MCQ questions covering grammar, vocabulary, reading comprehension, sentence correction, synonyms/antonyms, idioms, para jumbles.",
+        `Generate ${currentYear} placement verbal ability MCQ questions covering grammar, vocabulary, reading comprehension, sentence correction, synonyms/antonyms, idioms, para jumbles. Based on latest ${currentYear} placement exam patterns.`,
       technical:
-        "Generate placement technical MCQ questions covering data structures, algorithms, OOP, DBMS, OS, networking, C/C++/Java/Python basics, SQL queries.",
+        `Generate ${currentYear} placement technical MCQ questions covering data structures, algorithms, OOP, DBMS, OS, networking, C/C++/Java/Python basics, SQL queries. Based on latest ${currentYear} tech company placement patterns.`,
       interview:
-        "Generate placement interview preparation MCQ questions covering HR questions, behavioral questions, situational judgment, company culture fit, leadership scenarios.",
+        `Generate ${currentYear} placement interview preparation MCQ questions covering HR questions, behavioral questions, situational judgment, company culture fit, leadership scenarios. Based on latest ${currentYear} interview trends.`,
       general:
-        "Generate general knowledge MCQ questions for placements covering current affairs, business awareness, basic science, technology trends, Indian economy.",
+        `Generate ${currentYear} general knowledge MCQ questions for placements covering current affairs, business awareness, basic science, technology trends, Indian economy. Focus on ${currentYear} events and trends.`,
     };
 
     const prompt = modulePrompts[module] || modulePrompts.general;
