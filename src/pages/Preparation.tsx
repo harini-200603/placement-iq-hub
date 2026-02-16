@@ -234,7 +234,7 @@ const Preparation = () => {
                       <topic.icon className="w-5 h-5 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-semibold text-foreground text-sm truncate">
                           {topic.name}
                         </h3>
@@ -248,6 +248,20 @@ const Preparation = () => {
                       <p className="text-xs text-muted-foreground line-clamp-2">
                         {topic.description}
                       </p>
+                      {module === "technical" && topic.category === "Programming" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="mt-2 h-7 text-xs"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate("/coding-practice");
+                          }}
+                        >
+                          <Code2 className="w-3 h-3 mr-1" />
+                          Coding
+                        </Button>
+                      )}
                     </div>
                     <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
                   </CardContent>
