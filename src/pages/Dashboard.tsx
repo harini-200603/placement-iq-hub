@@ -1,67 +1,67 @@
 import { Link, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Brain,
-  BookOpen,
-  Code,
-  ClipboardList,
-  Users,
-  ArrowRight,
-  Trophy,
-  Target,
-  TrendingUp,
-  Clock,
-  CheckCircle2,
-  Star,
-} from "lucide-react";
+import { Brain, Code, Users, ArrowRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { DashboardStats } from "@/components/dashboard/DashboardStats";
+import { CompletedTests } from "@/components/dashboard/CompletedTests";
+import { InteractiveChallenge } from "@/components/dashboard/InteractiveChallenge";
+import { DashboardAIChat } from "@/components/dashboard/DashboardAIChat";
 
-const overallStats = [
-  { icon: Target, label: "Overall Progress", value: "32%", color: "text-primary" },
-  { icon: Trophy, label: "Tests Completed", value: "5", color: "text-accent" },
-  { icon: TrendingUp, label: "Avg. Score", value: "72%", color: "text-secondary" },
-  { icon: Clock, label: "Hours Practiced", value: "18h", color: "text-primary-light" },
-];
-
-const completedTests = [
-  { name: "Quantitative Aptitude - Set 1", score: 78, total: 100, date: "Feb 10, 2026" },
-  { name: "Verbal Reasoning Basics", score: 85, total: 100, date: "Feb 8, 2026" },
-  { name: "Logical Reasoning Mock", score: 62, total: 100, date: "Feb 5, 2026" },
-  { name: "Data Interpretation - Level 1", score: 70, total: 100, date: "Feb 3, 2026" },
-  { name: "English Grammar Test", score: 90, total: 100, date: "Jan 30, 2026" },
-];
+interface TestAttempt {
+  id: string;
+  module: string;
+  score: number;
+  total_questions: number;
+  completed_at: string | null;
+  created_at: string;
+}
 
 const recommendedModules = [
   {
     icon: Brain,
     title: "Aptitude Preparation",
     description: "Strengthen your quantitative and logical reasoning skills.",
-    progress: 45,
-    link: "/modules",
+    link: "/preparation/aptitude",
   },
   {
     icon: Code,
     title: "Technical Preparation",
     description: "Practice DSA and programming concepts for coding rounds.",
-    progress: 20,
-    link: "/modules",
+    link: "/preparation/technical",
   },
   {
     icon: Users,
     title: "Interview Preparation",
     description: "Prepare for HR and technical interview questions.",
-    progress: 10,
-    link: "/modules",
+    link: "/preparation/interview",
   },
 ];
 
 const Dashboard = () => {
   const { user, loading } = useAuth();
+  const [tests, setTests] = useState<TestAttempt[]>([]);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchData = async () => {
+      const { data } = await supabase
+        .from("test_attempts")
+        .select("id, module, score, total_questions, completed_at, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      setTests((data as TestAttempt[]) || []);
+      setStatsLoading(false);
+    };
+    fetchData();
+  }, [user]);
 
   if (loading) {
     return (
@@ -76,6 +76,18 @@ const Dashboard = () => {
   }
 
   const displayName = user.user_metadata?.full_name || user.email?.split("@")[0] || "Student";
+
+  // Compute real stats
+  const totalTests = tests.length;
+  const avgScore =
+    totalTests > 0
+      ? Math.round(tests.reduce((s, t) => s + (t.score / t.total_questions) * 100, 0) / totalTests)
+      : 0;
+  // Estimate practice time: ~1 min per question answered
+  const totalMinutes = tests.reduce((s, t) => s + t.total_questions, 0);
+  // Overall progress: unique modules attempted out of 4
+  const uniqueModules = new Set(tests.map((t) => t.module)).size;
+  const overallProgress = Math.round((uniqueModules / 4) * 100);
 
   return (
     <div className="min-h-screen bg-background">
@@ -97,66 +109,30 @@ const Dashboard = () => {
             </p>
           </motion.div>
 
-          {/* Stats Cards */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6 mb-10"
-          >
-            {overallStats.map((stat) => (
-              <Card key={stat.label} className="border-border shadow-soft hover-lift">
-                <CardContent className="p-5 flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
-                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-display font-bold text-foreground">{stat.value}</p>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </motion.div>
+          {/* Stats */}
+          {statsLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6 mb-10">
+              {[...Array(4)].map((_, i) => (
+                <Card key={i} className="border-border">
+                  <CardContent className="p-5">
+                    <div className="h-12 bg-muted animate-pulse rounded-xl" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <DashboardStats
+              totalTests={totalTests}
+              avgScore={avgScore}
+              overallProgress={overallProgress}
+              totalMinutes={totalMinutes}
+            />
+          )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
             {/* Completed Tests */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="lg:col-span-2"
-            >
-              <Card className="border-border shadow-soft">
-                <CardHeader className="pb-4">
-                  <CardTitle className="font-display text-xl flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-secondary" />
-                    Completed Tests
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {completedTests.map((test, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 rounded-xl bg-muted/50 border border-border"
-                    >
-                      <div className="flex-1 min-w-0 mr-4">
-                        <p className="font-semibold text-foreground truncate">{test.name}</p>
-                        <p className="text-sm text-muted-foreground">{test.date}</p>
-                      </div>
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        <div className="w-24">
-                          <Progress value={test.score} className="h-2" />
-                        </div>
-                        <span className="text-sm font-bold text-foreground w-14 text-right">
-                          {test.score}/{test.total}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </motion.div>
+            <CompletedTests tests={tests} />
 
             {/* Recommended Modules */}
             <motion.div
@@ -175,7 +151,7 @@ const Dashboard = () => {
                   {recommendedModules.map((mod) => (
                     <Link key={mod.title} to={mod.link}>
                       <div className="p-4 rounded-xl bg-muted/50 border border-border hover:border-primary/30 transition-colors cursor-pointer group mb-4 last:mb-0">
-                        <div className="flex items-center gap-3 mb-3">
+                        <div className="flex items-center gap-3 mb-2">
                           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                             <mod.icon className="w-5 h-5 text-primary" />
                           </div>
@@ -183,18 +159,12 @@ const Dashboard = () => {
                             {mod.title}
                           </p>
                         </div>
-                        <p className="text-sm text-muted-foreground mb-3">{mod.description}</p>
-                        <div className="flex items-center gap-2">
-                          <Progress value={mod.progress} className="h-2 flex-1" />
-                          <span className="text-xs font-semibold text-muted-foreground">{mod.progress}%</span>
-                        </div>
+                        <p className="text-sm text-muted-foreground">{mod.description}</p>
                       </div>
                     </Link>
                   ))}
                 </CardContent>
               </Card>
-
-              {/* Quick Action */}
               <div className="mt-6">
                 <Link to="/modules">
                   <Button variant="default" size="lg" className="w-full group">
@@ -204,6 +174,12 @@ const Dashboard = () => {
                 </Link>
               </div>
             </motion.div>
+          </div>
+
+          {/* Interactive + AI Chat row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <InteractiveChallenge />
+            <DashboardAIChat />
           </div>
         </div>
       </main>
