@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { CertificateCard } from "@/components/CertificateCard";
 import {
   Clock,
   ChevronLeft,
@@ -21,6 +22,7 @@ import {
   RotateCcw,
   Home,
   Lightbulb,
+  Award,
 } from "lucide-react";
 
 interface Question {
@@ -58,6 +60,7 @@ const MockTest = () => {
   const [timeLeft, setTimeLeft] = useState(15 * 60);
   const [score, setScore] = useState(0);
   const [showHint, setShowHint] = useState<Record<number, boolean>>({});
+  const [certificateSaved, setCertificateSaved] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
@@ -138,7 +141,7 @@ const MockTest = () => {
     return () => clearInterval(interval);
   }, [submitted, loading, questions.length]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let correct = 0;
     questions.forEach((q, i) => {
       if (answers[i] === q.correct_option) correct++;
@@ -146,8 +149,8 @@ const MockTest = () => {
     setScore(correct);
     setSubmitted(true);
 
-    // Save attempt
     if (user && module) {
+      // Save test attempt
       supabase
         .from("test_attempts")
         .insert({
@@ -165,6 +168,24 @@ const MockTest = () => {
         .then(({ error }) => {
           if (error) console.error("Save attempt error:", error);
         });
+
+      // Generate certificate
+      const userName =
+        user.user_metadata?.full_name || user.email?.split("@")[0] || "Student";
+      const { error: certError } = await supabase.from("certificates").insert({
+        user_id: user.id,
+        module,
+        title: `${MODULE_LABELS[module] || module} Mock Test`,
+        score: correct,
+        total_questions: questions.length,
+        user_name: userName,
+        completed_at: new Date().toISOString(),
+      });
+      if (certError) {
+        console.error("Certificate save error:", certError);
+      } else {
+        setCertificateSaved(true);
+      }
     }
   };
 
@@ -244,6 +265,27 @@ const MockTest = () => {
             </CardContent>
           </Card>
 
+          {/* Certificate */}
+          {certificateSaved && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8"
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <Award className="w-5 h-5 text-accent" />
+                <h3 className="text-xl font-bold text-foreground">Your Certificate</h3>
+              </div>
+              <CertificateCard
+                userName={user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Student"}
+                module={module || ""}
+                score={score}
+                totalQuestions={questions.length}
+                completedAt={new Date().toISOString()}
+              />
+            </motion.div>
+          )}
+
           {/* Review answers */}
           <div className="space-y-4 mb-8">
             <h3 className="text-xl font-bold text-foreground">Review Answers</h3>
@@ -299,12 +341,18 @@ const MockTest = () => {
             })}
           </div>
 
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-4 justify-center flex-wrap">
             <Button
               variant="outline"
               onClick={() => navigate("/modules")}
             >
               <Home className="w-4 h-4 mr-2" /> Back to Modules
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate("/certificates")}
+            >
+              <Award className="w-4 h-4 mr-2" /> All Certificates
             </Button>
             <Button
               onClick={() => {
@@ -314,6 +362,7 @@ const MockTest = () => {
                 setTimeLeft(15 * 60);
                 setScore(0);
                 setShowHint({});
+                setCertificateSaved(false);
                 fetchQuestions();
               }}
             >

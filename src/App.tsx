@@ -14,6 +14,7 @@ import TopicContent from "./pages/TopicContent";
 import Practice from "./pages/Practice";
 import CodingPractice from "./pages/CodingPractice";
 import InterviewPractice from "./pages/InterviewPractice";
+import Certificates from "./pages/Certificates";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/practice/:module" element={<Practice />} />
             <Route path="/coding-practice" element={<CodingPractice />} />
             <Route path="/interview-practice" element={<InterviewPractice />} />
+            <Route path="/certificates" element={<Certificates />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      certificates: {
+        Row: {
+          completed_at: string
+          created_at: string
+          id: string
+          module: string
+          score: number
+          title: string
+          total_questions: number
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          completed_at?: string
+          created_at?: string
+          id?: string
+          module: string
+          score: number
+          title: string
+          total_questions: number
+          user_id: string
+          user_name: string
+        }
+        Update: {
+          completed_at?: string
+          created_at?: string
+          id?: string
+          module?: string
+          score?: number
+          title?: string
+          total_questions?: number
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
       mock_tests: {
         Row: {
           created_at: string
