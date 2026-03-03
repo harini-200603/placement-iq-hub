@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { useFullscreen } from "@/hooks/useFullscreen";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -61,10 +62,39 @@ const MockTest = () => {
   const [score, setScore] = useState(0);
   const [showHint, setShowHint] = useState<Record<number, boolean>>({});
   const [certificateSaved, setCertificateSaved] = useState(false);
+  const [examStarted, setExamStarted] = useState(false);
+  const { isFullscreen, enterFullscreen, exitFullscreen, exitAttempts } = useFullscreen(examStarted && !submitted);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
   }, [user, authLoading, navigate]);
+
+  // Warn user about exit attempts
+  useEffect(() => {
+    if (exitAttempts > 0 && !submitted) {
+      toast({
+        title: "⚠️ Warning: Focus Lost!",
+        description: `You left the exam window (${exitAttempts} time${exitAttempts > 1 ? "s" : ""}). This may be flagged.`,
+        variant: "destructive",
+      });
+    }
+  }, [exitAttempts, submitted, toast]);
+
+  // Auto-enter fullscreen when questions load
+  useEffect(() => {
+    if (questions.length > 0 && !submitted && !examStarted) {
+      setExamStarted(true);
+      enterFullscreen();
+    }
+  }, [questions.length, submitted, examStarted, enterFullscreen]);
+
+  // Exit fullscreen on submit
+  useEffect(() => {
+    if (submitted) {
+      exitFullscreen();
+      setExamStarted(false);
+    }
+  }, [submitted, exitFullscreen]);
 
   const fetchQuestions = useCallback(async () => {
     if (!module) return;
@@ -377,10 +407,30 @@ const MockTest = () => {
 
   // Test-taking screen
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="pt-24 pb-12 container mx-auto px-4 max-w-3xl">
-        {/* Timer & Progress */}
+    <div className="min-h-screen bg-background select-none" style={{ userSelect: "none" }}>
+      {/* Fullscreen warning */}
+      {examStarted && !isFullscreen && (
+        <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-sm flex items-center justify-center">
+          <div className="text-center space-y-4 p-8">
+            <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto">
+              <Clock className="w-8 h-8 text-destructive" />
+            </div>
+            <h2 className="text-2xl font-bold text-foreground">Exam Mode Required</h2>
+            <p className="text-muted-foreground max-w-md">
+              This test requires full-screen mode. Please click below to re-enter the exam.
+              {exitAttempts > 0 && (
+                <span className="block mt-2 text-destructive font-medium">
+                  ⚠️ {exitAttempts} exit attempt(s) recorded.
+                </span>
+              )}
+            </p>
+            <Button onClick={enterFullscreen} size="lg">
+              Re-enter Full Screen
+            </Button>
+          </div>
+        </div>
+      )}
+      <main className="pt-8 pb-12 container mx-auto px-4 max-w-3xl">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-foreground">
             {MODULE_LABELS[module || ""] || "Mock Test"}
