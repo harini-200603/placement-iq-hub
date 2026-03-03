@@ -15,6 +15,8 @@ import Practice from "./pages/Practice";
 import CodingPractice from "./pages/CodingPractice";
 import InterviewPractice from "./pages/InterviewPractice";
 import Certificates from "./pages/Certificates";
+import Learn from "./pages/Learn";
+import LearnTopic from "./pages/LearnTopic";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +40,8 @@ const App = () => (
             <Route path="/coding-practice" element={<CodingPractice />} />
             <Route path="/interview-practice" element={<InterviewPractice />} />
             <Route path="/certificates" element={<Certificates />} />
+            <Route path="/learn" element={<Learn />} />
+            <Route path="/learn/:topicId" element={<LearnTopic />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
