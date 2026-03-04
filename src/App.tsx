@@ -16,6 +16,7 @@ import CodingPractice from "./pages/CodingPractice";
 import InterviewPractice from "./pages/InterviewPractice";
 import Certificates from "./pages/Certificates";
 import Learn from "./pages/Learn";
+import LearnSubject from "./pages/LearnSubject";
 import LearnTopic from "./pages/LearnTopic";
 import NotFound from "./pages/NotFound";
 
@@ -41,7 +42,8 @@ const App = () => (
             <Route path="/interview-practice" element={<InterviewPractice />} />
             <Route path="/certificates" element={<Certificates />} />
             <Route path="/learn" element={<Learn />} />
-            <Route path="/learn/:topicId" element={<LearnTopic />} />
+            <Route path="/learn/:subjectId" element={<LearnSubject />} />
+            <Route path="/learn/:subjectId/:topicId" element={<LearnTopic />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
