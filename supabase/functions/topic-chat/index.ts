@@ -19,31 +19,8 @@ serve(async (req) => {
     let systemPrompt = "";
 
     if (action === "generate-content") {
-      systemPrompt = `You are an expert placement preparation tutor. Generate comprehensive study material for the topic "${topic}" under the "${module}" module.
-
-Structure your response in clear markdown with these sections:
-## 📚 Introduction
-A brief 2-3 line intro explaining what this topic is about and why it's important for placements.
-
-## 🔑 Key Concepts
-List and explain the core concepts clearly with simple language a student can understand.
-
-## 📐 Important Formulas
-List ALL relevant formulas with clear variable definitions. Use simple notation. For each formula, explain when to use it.
-
-## 🎯 Shortcut Tricks
-Practical tips and mental math shortcuts that save time in exams.
-
-## ✅ Solved Examples
-Provide 3-4 step-by-step solved examples going from easy to hard. Show EVERY step clearly.
-
-## ⚠️ Common Mistakes
-List common pitfalls students make and how to avoid them.
-
-## 💡 Quick Revision Points
-A bullet-point summary for last-minute revision.
-
-Make it human-friendly, use analogies where possible, and write as if you're tutoring a student one-on-one.`;
+      // Use the prompt from the user message directly - it contains the full structured prompt
+      systemPrompt = `You are an expert tutor for placement preparation and programming. Generate comprehensive, well-structured study notes. Use clean markdown formatting with clear headings, bullet points, code examples with outputs, and beginner-friendly explanations. Write as if tutoring a student one-on-one. Be thorough but clear.`;
     } else {
       systemPrompt = `You are a friendly placement preparation tutor helping a student with the topic "${topic}" in the "${module}" module. 
 
