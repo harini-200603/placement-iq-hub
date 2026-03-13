@@ -6,12 +6,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
+import { addToRevision } from "@/lib/smartFeatures";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import {
   ArrowLeft, ChevronLeft, ChevronRight, BookOpen,
-  Loader2, CheckCircle2, Copy, Check,
+  Loader2, CheckCircle2, Copy, Check, Bookmark,
 } from "lucide-react";
 import { getSubject, getTopic, getContentPrompt } from "@/data/learningTopics";
 
@@ -191,6 +192,23 @@ const LearnTopic = () => {
               </Button>
             </div>
             <p className="text-muted-foreground mt-1">{topic.description}</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                addToRevision({
+                  subjectId: subject.id,
+                  topicId: topic.id,
+                  title: `${topic.title} (${subject.title})`,
+                  reason: "manual",
+                  priority: "medium",
+                });
+                toast({ title: "📌 Added to revision queue!" });
+              }}
+              className="gap-1 mt-2 text-xs"
+            >
+              <Bookmark className="w-3 h-3" /> Add to Revision
+            </Button>
           </motion.div>
 
           {/* Content */}
