@@ -18,6 +18,7 @@ import Certificates from "./pages/Certificates";
 import Learn from "./pages/Learn";
 import LearnSubject from "./pages/LearnSubject";
 import LearnTopic from "./pages/LearnTopic";
+import SmartTools from "./pages/SmartTools";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
