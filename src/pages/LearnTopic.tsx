@@ -192,6 +192,23 @@ const LearnTopic = () => {
               </Button>
             </div>
             <p className="text-muted-foreground mt-1">{topic.description}</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                addToRevision({
+                  subjectId: subject.id,
+                  topicId: topic.id,
+                  title: `${topic.title} (${subject.title})`,
+                  reason: "manual",
+                  priority: "medium",
+                });
+                toast({ title: "📌 Added to revision queue!" });
+              }}
+              className="gap-1 mt-2 text-xs"
+            >
+              <Bookmark className="w-3 h-3" /> Add to Revision
+            </Button>
           </motion.div>
 
           {/* Content */}
