@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
+import { addToRevision } from "@/lib/smartFeatures";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
