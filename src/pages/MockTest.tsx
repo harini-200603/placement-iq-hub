@@ -175,7 +175,19 @@ const MockTest = () => {
   const handleSubmit = async () => {
     let correct = 0;
     questions.forEach((q, i) => {
-      if (answers[i] === q.correct_option) correct++;
+      if (answers[i] === q.correct_option) {
+        correct++;
+      } else if (answers[i]) {
+        // Save wrong answers to mistake notebook
+        addMistake({
+          question: q.question,
+          userAnswer: answers[i],
+          correctAnswer: q.correct_option,
+          explanation: q.explanation || "",
+          module: module || "unknown",
+          topic: q.question.substring(0, 30),
+        });
+      }
     });
     setScore(correct);
     setSubmitted(true);
