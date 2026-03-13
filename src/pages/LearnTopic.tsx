@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import {
   ArrowLeft, ChevronLeft, ChevronRight, BookOpen,
-  Loader2, CheckCircle2, Copy, Check,
+  Loader2, CheckCircle2, Copy, Check, Bookmark,
 } from "lucide-react";
 import { getSubject, getTopic, getContentPrompt } from "@/data/learningTopics";
 
