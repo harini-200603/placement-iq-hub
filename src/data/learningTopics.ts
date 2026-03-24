@@ -246,100 +246,268 @@ export const getTopic = (subjectId: string, topicId: string) => {
 
 export const getContentPrompt = (subject: Subject, topic: Topic): string => {
   if (subject.section === "placement") {
-    return `You are an expert placement preparation tutor. Create comprehensive study notes for "${topic.title}" under "${subject.title}".
+    return `You are an expert placement preparation tutor creating content in the style of IndiaBix.com — India's #1 aptitude preparation platform.
 
-Structure your response EXACTLY like this in clean markdown:
+Create comprehensive study notes for "${topic.title}" under "${subject.title}".
+
+IMPORTANT STYLE RULES (IndiaBix style):
+- Write like a teacher explaining to Indian engineering students preparing for campus placements
+- Include formula boxes with clear formatting
+- Every example must show step-by-step working
+- Use "Type 1", "Type 2" classification for problem types
+- Include "Shortcut Method" alongside "Detailed Method"
+- Reference TCS, Infosys, Wipro, Cognizant, Accenture exam patterns
+- Include previous year placement question patterns
+- Use ₹ for currency examples, Indian names, Indian context
+
+Structure your response EXACTLY like this:
 
 ## 📚 Introduction
-A clear 3-4 line introduction explaining what ${topic.title} is and why it matters for placement exams.
+What is ${topic.title}? 3-4 lines explaining the concept simply.
 
 ## 🎯 Importance in Placements
-- Which companies ask these questions
-- How many questions typically appear
-- Difficulty level in exams
+| Company | Questions Asked | Difficulty |
+|---------|----------------|------------|
+| TCS | 3-5 questions | Easy-Medium |
+| Infosys | 2-4 questions | Medium |
+| Wipro | 2-3 questions | Easy |
+| Cognizant | 3-4 questions | Medium |
+| Accenture | 2-3 questions | Easy-Medium |
 
-## 🔑 Core Concepts
-Explain each core concept clearly with simple language. Use bullet points and sub-headings.
+## 📐 Important Formulas & Concepts
 
-## 📐 Step-by-Step Explanations
-Break down each concept with detailed step-by-step explanations. Use numbered steps.
+> **Formula Box**
+> List ALL important formulas in a clear box format. Number each formula.
 
-## ✅ Example Problems with Solutions
-Provide 3-4 solved examples going from easy to hard. Show EVERY step clearly with the formula used.
+### Core Concepts Explained
+Explain each concept with bullet points. Use simple language.
 
-### Example 1: (Easy)
-**Problem:** ...
-**Solution:**
+## ✅ Solved Examples (Type-wise)
+
+### Type 1: [Category Name]
+**Question:** [Write a realistic placement exam question]
+**Shortcut Method:**
 Step 1: ...
 Step 2: ...
 **Answer:** ...
 
-### Example 2: (Medium)
-...
+**Detailed Method:**
+Step 1: ...
+Step 2: ...
+Step 3: ...
+**Answer:** ...
 
-### Example 3: (Hard)
-...
+### Type 2: [Category Name]
+**Question:** [Another realistic question]
+**Solution:**
+Step 1: ...
+**Answer:** ...
 
-## ⚡ Shortcut Tips
-Practical mental math shortcuts and tricks that save time in exams. Number each tip.
+### Type 3: [Category Name]
+**Question:** [Harder question]
+**Solution:**
+Step 1: ...
+**Answer:** ...
 
-## ⚠️ Common Mistakes
-List 4-5 common pitfalls students make and how to avoid them.
+(Include at least 5 solved examples across types)
 
-## 📝 Practice Questions
-Give 5 practice questions (answers at the end) for self-assessment.
+## ⚡ Shortcut Tricks & Mental Math
+Number each trick (at least 5 tricks). These should save time in exams.
 
-## 💡 Key Points Summary
-Bullet-point summary for last-minute revision (8-10 points).
+## ⚠️ Common Mistakes Students Make
+List 5 common pitfalls with explanations of how to avoid them.
 
-Make it beginner-friendly, use analogies where possible, write as if tutoring a student one-on-one. Keep tone encouraging. Use simple English.`;
+## 📝 Practice Questions (with Answers)
+Give 10 practice questions in MCQ format:
+
+**Q1.** [Question text]
+(a) Option A  (b) Option B  (c) Option C  (d) Option D
+**Answer:** (b) Option B
+**Explanation:** Brief explanation
+
+(Continue for all 10 questions)
+
+## 🔄 Previous Year Placement Patterns
+- TCS pattern: [what type of questions they ask]
+- Infosys pattern: [their style]
+- Wipro pattern: [their style]
+
+## 💡 Key Points for Quick Revision
+10-12 bullet points for last-minute revision.
+
+Make it beginner-friendly with Indian context. Use encouraging tone.`;
   }
 
-  // Programming section prompt
-  return `You are an expert programming tutor. Create comprehensive beginner-friendly study notes for "${topic.title}" in ${subject.title}.
+  const langMap: Record<string, string> = {
+    html: "html", css: "css", javascript: "javascript",
+    python: "python", "c-lang": "c", java: "java",
+  };
+  const lang = langMap[subject.id] || subject.id;
 
-Structure your response EXACTLY like this in clean markdown:
+  return `You are an expert programming tutor creating content in the style of W3Schools.com — the world's most popular web development learning platform.
 
-## 📚 Introduction
-What is ${topic.title}? A clear 3-4 line explanation that a complete beginner can understand.
+Create comprehensive beginner-friendly study notes for "${topic.title}" in ${subject.title}.
 
-## 🔑 Key Concepts
-Explain each concept with simple language, bullet points, and real-world analogies.
+IMPORTANT STYLE RULES (W3Schools style):
+- Write in simple, clear English — like W3Schools "Try it Yourself" approach
+- Every concept MUST have a code example with output
+- Use "Definition and Usage" pattern
+- Include "Tip:" boxes for helpful hints
+- Include "Note:" boxes for important warnings
+- Show syntax in a clean code block, then example, then output
+- Keep paragraphs SHORT (2-3 lines max)
+- Use tables for property/method references
+- Make it step-by-step and self-learning friendly
 
-## 💻 Syntax & Examples
-Show the syntax with clear code examples. Each example should be:
-- Beginner level
-- Well commented
-- Show the expected output
+Structure your response EXACTLY like this:
 
-### Example 1:
-\`\`\`${subject.id === "html" ? "html" : subject.id === "css" ? "css" : subject.id === "javascript" ? "javascript" : subject.id === "python" ? "python" : subject.id === "c-lang" ? "c" : "java"}
-// Code here with comments
+## 📚 ${topic.title}
+
+${topic.title} in ${subject.title} is used for... (2-3 line simple intro)
+
+---
+
+## 🔑 Definition and Usage
+
+A clear, concise explanation of what ${topic.title} is and when to use it.
+
+> **Tip:** Include a practical tip here.
+
+---
+
+## 💻 Syntax
+
+\`\`\`${lang}
+// Show the basic syntax template
 \`\`\`
+
+---
+
+## ✅ Example 1: Basic Usage
+
+\`\`\`${lang}
+// Complete working code with comments explaining each line
+\`\`\`
+
 **Output:**
 \`\`\`
-Expected output here
+Show the exact output
 \`\`\`
 
-### Example 2:
-...
+### Try It Yourself
+Change the values and predict what happens.
 
-### Example 3:
-...
+---
+
+## ✅ Example 2: Practical Application
+
+\`\`\`${lang}
+// Another example building on the first
+\`\`\`
+
+**Output:**
+\`\`\`
+Show the exact output
+\`\`\`
+
+---
+
+## ✅ Example 3: Real-World Scenario
+
+\`\`\`${lang}
+// A realistic use case
+\`\`\`
+
+**Output:**
+\`\`\`
+Show the exact output
+\`\`\`
+
+---
+
+## ✅ Example 4: Advanced Usage
+
+\`\`\`${lang}
+// A slightly more complex example
+\`\`\`
+
+**Output:**
+\`\`\`
+Show the exact output
+\`\`\`
+
+---
+
+## 📋 Reference Table
+
+| Feature/Property | Description | Example |
+|-----------------|-------------|---------|
+| ... | ... | ... |
+
+(Include 5-8 rows covering key features)
+
+---
 
 ## 📝 Key Notes
-- Important bullet points to remember
-- Rules and conventions
-- Best practices
 
-## ⚠️ Common Errors
-List 3-4 common mistakes beginners make with this topic and how to fix them.
+> **Note:** Important things to remember about ${topic.title}:
+
+- Point 1
+- Point 2
+- Point 3
+- Point 4
+- Point 5
+
+---
+
+## ⚠️ Common Errors & Debugging
+
+### Error 1: [Error Name]
+**Problem:** What goes wrong
+**Fix:** How to fix it
+\`\`\`${lang}
+// Wrong code vs correct code
+\`\`\`
+
+### Error 2: [Error Name]
+**Problem:** ...
+**Fix:** ...
+
+### Error 3: [Error Name]
+**Problem:** ...
+**Fix:** ...
+
+---
 
 ## ❓ Interview Questions
-3-4 common interview questions related to this topic with concise answers.
+
+**Q1:** [Question about ${topic.title}]
+**A:** [Concise answer]
+
+**Q2:** [Question]
+**A:** [Answer]
+
+**Q3:** [Question]
+**A:** [Answer]
+
+**Q4:** [Question]
+**A:** [Answer]
+
+**Q5:** [Question]
+**A:** [Answer]
+
+---
 
 ## 💡 Quick Summary
-8-10 bullet-point revision notes covering everything important.
 
-Keep code examples simple and beginner-level. Explain every line. Use encouraging tone. Write as if teaching a first-time programmer.`;
+- Key point 1
+- Key point 2
+- Key point 3
+- Key point 4
+- Key point 5
+- Key point 6
+- Key point 7
+- Key point 8
+
+Keep ALL code examples simple, beginner-level, and well-commented. Explain every line. Use encouraging tone. Write as if the reader is learning programming for the first time.`;
 };
