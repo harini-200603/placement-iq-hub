@@ -255,6 +255,9 @@ const LearnTopic = () => {
             </Card>
           )}
 
+          {/* Practice Quiz */}
+          <TopicQuiz subjectId={subjectId || ""} topicId={topicId || ""} topicTitle={topic.title} />
+
           {/* Bottom Navigation */}
           <div className="flex items-center justify-between pt-4 border-t border-border">
             <Button
