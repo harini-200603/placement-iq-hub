@@ -55,6 +55,69 @@ export const TopicQuiz = ({ subjectId, topicId, topicTitle }: TopicQuizProps) =>
   const [answered, setAnswered] = useState(false);
   const [stats, setStats] = useState({ correct: 0, wrong: 0, total: 0 });
   const [showResults, setShowResults] = useState(false);
+  const [revisionContent, setRevisionContent] = useState("");
+  const [revisionLoading, setRevisionLoading] = useState(false);
+  const [showRevision, setShowRevision] = useState(false);
+  const [revisionDone, setRevisionDone] = useState(false);
+
+  const REVISION_KEY = `revision-notes-${subjectId}-${topicId}`;
+
+  const loadRevision = useCallback(async () => {
+    setShowRevision(true);
+    setRevisionLoading(true);
+
+    const cached = localStorage.getItem(REVISION_KEY);
+    if (cached) {
+      setRevisionContent(cached);
+      setRevisionLoading(false);
+      return;
+    }
+
+    try {
+      const resp = await supabase.functions.invoke("topic-chat", {
+        body: {
+          messages: [{ role: "user", content: `Give me a quick revision summary for "${topicTitle}" in the context of ${subjectId} for placement preparation. Include: key formulas, important concepts, common tricks, and 3-5 quick tips. Keep it concise and easy to scan before a quiz. Use bullet points and bold key terms. Maximum 300 words.` }],
+          module: subjectId,
+          topic: topicTitle,
+          action: "generate-content",
+        },
+      });
+
+      if (resp.error) throw resp.error;
+
+      const reader = resp.data as ReadableStream;
+      if (reader && typeof reader.getReader === "function") {
+        const r = reader.getReader();
+        const decoder = new TextDecoder();
+        let full = "";
+        while (true) {
+          const { done, value } = await r.read();
+          if (done) break;
+          const chunk = decoder.decode(value);
+          for (const line of chunk.split("\n")) {
+            if (line.startsWith("data: ") && line !== "data: [DONE]") {
+              try {
+                const json = JSON.parse(line.slice(6));
+                const delta = json.choices?.[0]?.delta?.content || "";
+                full += delta;
+                setRevisionContent(full);
+              } catch {}
+            }
+          }
+        }
+        if (full) localStorage.setItem(REVISION_KEY, full);
+      } else {
+        const text = resp.data?.response || resp.data?.content || "Revision notes unavailable.";
+        setRevisionContent(text);
+        localStorage.setItem(REVISION_KEY, text);
+      }
+    } catch (e) {
+      console.error(e);
+      setRevisionContent("⚠️ Could not load revision notes. You can still proceed to the quiz.");
+    } finally {
+      setRevisionLoading(false);
+    }
+  }, [subjectId, topicId, topicTitle, REVISION_KEY]);
 
   const generateQuestions = useCallback(async () => {
     setLoading(true);
