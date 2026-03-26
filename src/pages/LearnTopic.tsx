@@ -15,6 +15,7 @@ import {
   Loader2, CheckCircle2, Copy, Check, Bookmark,
 } from "lucide-react";
 import { getSubject, getTopic, getContentPrompt } from "@/data/learningTopics";
+import { TopicQuiz } from "@/components/learn/TopicQuiz";
 
 const STORAGE_KEY = (id: string) => `learn-progress-${id}`;
 const CONTENT_KEY = (subjectId: string, topicId: string) => `learn-content-${subjectId}-${topicId}`;
