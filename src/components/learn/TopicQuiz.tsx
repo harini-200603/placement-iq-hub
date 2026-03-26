@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,9 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from "react-markdown";
 import {
   Loader2, CheckCircle2, XCircle, ChevronRight,
   Lightbulb, Building2, RotateCcw, Brain, Trophy,
+  BookOpen, ArrowRight,
 } from "lucide-react";
 
 interface QuizQuestion {
@@ -53,6 +55,69 @@ export const TopicQuiz = ({ subjectId, topicId, topicTitle }: TopicQuizProps) =>
   const [answered, setAnswered] = useState(false);
   const [stats, setStats] = useState({ correct: 0, wrong: 0, total: 0 });
   const [showResults, setShowResults] = useState(false);
+  const [revisionContent, setRevisionContent] = useState("");
+  const [revisionLoading, setRevisionLoading] = useState(false);
+  const [showRevision, setShowRevision] = useState(false);
+  const [revisionDone, setRevisionDone] = useState(false);
+
+  const REVISION_KEY = `revision-notes-${subjectId}-${topicId}`;
+
+  const loadRevision = useCallback(async () => {
+    setShowRevision(true);
+    setRevisionLoading(true);
+
+    const cached = localStorage.getItem(REVISION_KEY);
+    if (cached) {
+      setRevisionContent(cached);
+      setRevisionLoading(false);
+      return;
+    }
+
+    try {
+      const resp = await supabase.functions.invoke("topic-chat", {
+        body: {
+          messages: [{ role: "user", content: `Give me a quick revision summary for "${topicTitle}" in the context of ${subjectId} for placement preparation. Include: key formulas, important concepts, common tricks, and 3-5 quick tips. Keep it concise and easy to scan before a quiz. Use bullet points and bold key terms. Maximum 300 words.` }],
+          module: subjectId,
+          topic: topicTitle,
+          action: "generate-content",
+        },
+      });
+
+      if (resp.error) throw resp.error;
+
+      const reader = resp.data as ReadableStream;
+      if (reader && typeof reader.getReader === "function") {
+        const r = reader.getReader();
+        const decoder = new TextDecoder();
+        let full = "";
+        while (true) {
+          const { done, value } = await r.read();
+          if (done) break;
+          const chunk = decoder.decode(value);
+          for (const line of chunk.split("\n")) {
+            if (line.startsWith("data: ") && line !== "data: [DONE]") {
+              try {
+                const json = JSON.parse(line.slice(6));
+                const delta = json.choices?.[0]?.delta?.content || "";
+                full += delta;
+                setRevisionContent(full);
+              } catch {}
+            }
+          }
+        }
+        if (full) localStorage.setItem(REVISION_KEY, full);
+      } else {
+        const text = resp.data?.response || resp.data?.content || "Revision notes unavailable.";
+        setRevisionContent(text);
+        localStorage.setItem(REVISION_KEY, text);
+      }
+    } catch (e) {
+      console.error(e);
+      setRevisionContent("⚠️ Could not load revision notes. You can still proceed to the quiz.");
+    } finally {
+      setRevisionLoading(false);
+    }
+  }, [subjectId, topicId, topicTitle, REVISION_KEY]);
 
   const generateQuestions = useCallback(async () => {
     setLoading(true);
@@ -129,6 +194,52 @@ export const TopicQuiz = ({ subjectId, topicId, topicTitle }: TopicQuizProps) =>
     generateQuestions();
   };
 
+  // Show revision before quiz
+  if (showRevision && !revisionDone) {
+    return (
+      <Card className="border-accent/30 bg-accent/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <BookOpen className="w-5 h-5 text-accent" />
+            Quick Revision — {topicTitle}
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Review key concepts before starting the quiz
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {revisionLoading && !revisionContent ? (
+            <div className="flex flex-col items-center py-8">
+              <Loader2 className="w-8 h-8 animate-spin text-accent mb-3" />
+              <p className="text-sm text-muted-foreground">Generating revision notes...</p>
+            </div>
+          ) : (
+            <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-foreground/90 prose-strong:text-foreground prose-li:text-foreground/90 prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm">
+              <ReactMarkdown>{revisionContent}</ReactMarkdown>
+            </div>
+          )}
+          <div className="flex gap-3 pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => { setShowRevision(false); }}
+            >
+              Back
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setRevisionDone(true)}
+              disabled={revisionLoading && !revisionContent}
+              className="gap-2"
+            >
+              I'm Ready, Start Quiz <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (!started) {
     return (
       <Card className="border-primary/20 bg-primary/5">
@@ -159,9 +270,14 @@ export const TopicQuiz = ({ subjectId, topicId, topicTitle }: TopicQuizProps) =>
               ))}
             </div>
           </div>
-          <Button onClick={generateQuestions} className="gap-2">
-            <Brain className="w-4 h-4" /> Generate 10 Practice Questions
-          </Button>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={loadRevision} className="gap-2">
+              <BookOpen className="w-4 h-4" /> Quick Revision First
+            </Button>
+            <Button onClick={generateQuestions} className="gap-2">
+              <Brain className="w-4 h-4" /> Start Quiz Directly
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );
