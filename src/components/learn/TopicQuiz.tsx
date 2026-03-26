@@ -194,6 +194,52 @@ export const TopicQuiz = ({ subjectId, topicId, topicTitle }: TopicQuizProps) =>
     generateQuestions();
   };
 
+  // Show revision before quiz
+  if (showRevision && !revisionDone) {
+    return (
+      <Card className="border-accent/30 bg-accent/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <BookOpen className="w-5 h-5 text-accent" />
+            Quick Revision — {topicTitle}
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Review key concepts before starting the quiz
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {revisionLoading && !revisionContent ? (
+            <div className="flex flex-col items-center py-8">
+              <Loader2 className="w-8 h-8 animate-spin text-accent mb-3" />
+              <p className="text-sm text-muted-foreground">Generating revision notes...</p>
+            </div>
+          ) : (
+            <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-foreground/90 prose-strong:text-foreground prose-li:text-foreground/90 prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm">
+              <ReactMarkdown>{revisionContent}</ReactMarkdown>
+            </div>
+          )}
+          <div className="flex gap-3 pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => { setShowRevision(false); }}
+            >
+              Back
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setRevisionDone(true)}
+              disabled={revisionLoading && !revisionContent}
+              className="gap-2"
+            >
+              I'm Ready, Start Quiz <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (!started) {
     return (
       <Card className="border-primary/20 bg-primary/5">
@@ -224,9 +270,14 @@ export const TopicQuiz = ({ subjectId, topicId, topicTitle }: TopicQuizProps) =>
               ))}
             </div>
           </div>
-          <Button onClick={generateQuestions} className="gap-2">
-            <Brain className="w-4 h-4" /> Generate 10 Practice Questions
-          </Button>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={loadRevision} className="gap-2">
+              <BookOpen className="w-4 h-4" /> Quick Revision First
+            </Button>
+            <Button onClick={generateQuestions} className="gap-2">
+              <Brain className="w-4 h-4" /> Start Quiz Directly
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );
