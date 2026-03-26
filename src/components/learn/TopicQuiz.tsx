@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,9 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from "react-markdown";
 import {
   Loader2, CheckCircle2, XCircle, ChevronRight,
   Lightbulb, Building2, RotateCcw, Brain, Trophy,
+  BookOpen, ArrowRight,
 } from "lucide-react";
 
 interface QuizQuestion {
