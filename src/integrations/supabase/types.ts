@@ -113,6 +113,48 @@ export type Database = {
         }
         Relationships: []
       }
+      question_assignments: {
+        Row: {
+          assign_to: string
+          assigned_student_ids: string[] | null
+          company_focus: string | null
+          created_at: string
+          description: string | null
+          due_date: string | null
+          faculty_id: string
+          id: string
+          subject_id: string
+          title: string
+          topic_id: string | null
+        }
+        Insert: {
+          assign_to?: string
+          assigned_student_ids?: string[] | null
+          company_focus?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          faculty_id: string
+          id?: string
+          subject_id: string
+          title: string
+          topic_id?: string | null
+        }
+        Update: {
+          assign_to?: string
+          assigned_student_ids?: string[] | null
+          company_focus?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          faculty_id?: string
+          id?: string
+          subject_id?: string
+          title?: string
+          topic_id?: string | null
+        }
+        Relationships: []
+      }
       questions: {
         Row: {
           correct_option: string
@@ -152,6 +194,48 @@ export type Database = {
           option_c?: string
           option_d?: string
           question?: string
+        }
+        Relationships: []
+      }
+      student_progress: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          quiz_score: number | null
+          quiz_total: number | null
+          status: string
+          subject_id: string
+          time_spent_seconds: number | null
+          topic_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          quiz_score?: number | null
+          quiz_total?: number | null
+          status?: string
+          subject_id: string
+          time_spent_seconds?: number | null
+          topic_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          quiz_score?: number | null
+          quiz_total?: number | null
+          status?: string
+          subject_id?: string
+          time_spent_seconds?: number | null
+          topic_id?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
