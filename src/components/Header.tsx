@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, GraduationCap, LogOut, User } from "lucide-react";
+import { Menu, X, GraduationCap, LogOut, User, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,10 +22,22 @@ const navItems = [
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isFaculty, setIsFaculty] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
-  const filteredNav = navItems.filter(
+  useEffect(() => {
+    if (!user) { setIsFaculty(false); return; }
+    supabase.from("profiles").select("role").eq("user_id", user.id).single()
+      .then(({ data }) => setIsFaculty(data?.role === "faculty"));
+  }, [user]);
+
+  const allNav = [
+    ...navItems,
+    ...(isFaculty ? [{ label: "Faculty", href: "/faculty", authRequired: true }] : []),
+  ];
+
+  const filteredNav = allNav.filter(
     (item) => !item.authRequired || user
   );
 
