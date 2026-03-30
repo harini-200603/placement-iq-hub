@@ -118,7 +118,7 @@ const LearnTopic = () => {
     loadContent();
   }, [loadContent]);
 
-  const toggleCompleted = () => {
+  const toggleCompleted = async () => {
     if (!subject || !topic) return;
     const key = STORAGE_KEY(subject.id);
     let arr: string[] = [];
@@ -127,15 +127,32 @@ const LearnTopic = () => {
       if (stored) arr = JSON.parse(stored);
     } catch {}
 
+    const newCompleted = !isCompleted;
     if (isCompleted) {
       arr = arr.filter((id) => id !== topic.id);
     } else {
       arr.push(topic.id);
     }
     localStorage.setItem(key, JSON.stringify(arr));
-    setIsCompleted(!isCompleted);
-    if (!isCompleted) {
+    setIsCompleted(newCompleted);
+    if (newCompleted) {
       toast({ title: "✅ Topic marked as completed!" });
+    }
+
+    // Save to DB if logged in
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase.from("student_progress").upsert({
+          user_id: session.user.id,
+          subject_id: subject.id,
+          topic_id: topic.id,
+          status: newCompleted ? "completed" : "in_progress",
+          completed_at: newCompleted ? new Date().toISOString() : null,
+        }, { onConflict: "user_id,subject_id,topic_id" });
+      }
+    } catch (e) {
+      console.error("Failed to save progress:", e);
     }
   };
 

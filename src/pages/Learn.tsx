@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { subjects, getSubjectsBySection, type Subject } from "@/data/learningTopics";
+import { StudentAssignments } from "@/components/learn/StudentAssignments";
 
 const ICON_MAP: Record<string, React.ReactNode> = {
   Calculator: <Calculator className="w-6 h-6" />,
@@ -173,6 +174,11 @@ const Learn = () => {
               </motion.div>
             ))}
           </div>
+        </section>
+
+        {/* Faculty Assignments for Students */}
+        <section className="container mx-auto px-4 mb-10 max-w-6xl">
+          <StudentAssignments />
         </section>
 
         {/* SECTION 1: Placement Preparation */}
