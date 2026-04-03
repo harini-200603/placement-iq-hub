@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, BookOpen, Trophy } from "lucide-react";
+import { ArrowRight, BookOpen, Trophy, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import heroImage from "@/assets/hero-placement.jpg";
@@ -13,17 +13,11 @@ export const HeroSection = () => {
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <img
-          src={heroImage}
-          alt="Campus placement scene"
-          className="w-full h-full object-cover"
-        />
+        <img src={heroImage} alt="Campus placement scene" className="w-full h-full object-cover" />
         <div className="absolute inset-0 hero-overlay" />
       </div>
 
-      {/* Animated Background Elements */}
       <div className="absolute inset-0 z-10 overflow-hidden">
         <motion.div
           animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
@@ -37,7 +31,6 @@ export const HeroSection = () => {
         />
       </div>
 
-      {/* Content */}
       <div className="relative z-20 container mx-auto px-4 lg:px-8 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -45,7 +38,6 @@ export const HeroSection = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="max-w-4xl mx-auto"
         >
-          {/* Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -58,13 +50,10 @@ export const HeroSection = () => {
             </span>
           </motion.div>
 
-          {/* Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-primary-foreground leading-tight mb-6">
             Your Smart Path to{" "}
             <span className="relative">
-              <span className="relative z-10 text-accent">
-                Campus Placements
-              </span>
+              <span className="relative z-10 text-accent">Campus Placements</span>
               <motion.span
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
@@ -74,7 +63,6 @@ export const HeroSection = () => {
             </span>
           </h1>
 
-          {/* Description */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -86,7 +74,6 @@ export const HeroSection = () => {
             readiness. Ace your campus placements with confidence!
           </motion.p>
 
-          {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -95,56 +82,39 @@ export const HeroSection = () => {
           >
             {user ? (
               <>
-                <Link to="/dashboard">
-                  <Button
-                    variant="hero"
-                    size="xl"
-                    className="group min-w-[200px]"
-                  >
+                <Link to="/learn">
+                  <Button variant="hero" size="xl" className="group min-w-[200px]">
                     <BookOpen className="w-5 h-5" />
                     Continue Learning
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Link to="/modules">
-                  <Button
-                    variant="heroOutline"
-                    size="xl"
-                    className="min-w-[200px]"
-                  >
-                    <Trophy className="w-5 h-5" />
-                    Take a Mock Test
+                <Link to="/dashboard">
+                  <Button variant="heroOutline" size="xl" className="min-w-[200px]">
+                    <Sparkles className="w-5 h-5" />
+                    My Dashboard
                   </Button>
                 </Link>
               </>
             ) : (
               <>
                 <Link to="/auth">
-                  <Button
-                    variant="hero"
-                    size="xl"
-                    className="group min-w-[200px]"
-                  >
+                  <Button variant="hero" size="xl" className="group min-w-[200px]">
                     <BookOpen className="w-5 h-5" />
                     Start Preparation
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Link to="/modules">
-                  <Button
-                    variant="heroOutline"
-                    size="xl"
-                    className="min-w-[200px]"
-                  >
-                    <Trophy className="w-5 h-5" />
-                    Take a Mock Test
+                <Link to="/learn">
+                  <Button variant="heroOutline" size="xl" className="min-w-[200px]">
+                    <Sparkles className="w-5 h-5" />
+                    Explore Topics
                   </Button>
                 </Link>
               </>
             )}
           </motion.div>
 
-          {/* Stats */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -158,19 +128,14 @@ export const HeroSection = () => {
               { value: "95%", label: "Success Rate" },
             ].map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl md:text-4xl font-display font-bold text-accent mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-primary-foreground/70">
-                  {stat.label}
-                </div>
+                <div className="text-3xl md:text-4xl font-display font-bold text-accent mb-1">{stat.value}</div>
+                <div className="text-sm text-primary-foreground/70">{stat.label}</div>
               </div>
             ))}
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

@@ -7,7 +7,6 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
-import Modules from "./pages/Modules";
 import MockTest from "./pages/MockTest";
 import Preparation from "./pages/Preparation";
 import TopicContent from "./pages/TopicContent";
@@ -35,7 +34,6 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/modules" element={<Modules />} />
             <Route path="/preparation/:module" element={<Preparation />} />
             <Route path="/topic/:module/:topic" element={<TopicContent />} />
             <Route path="/mock-test/:module" element={<MockTest />} />
