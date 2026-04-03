@@ -184,8 +184,8 @@ const Auth = () => {
                 onClick={() => setRoleChoice("faculty")}
                 className="flex flex-col items-center gap-3 p-6 rounded-xl border-2 border-border hover:border-primary bg-card hover:bg-primary/5 transition-all"
               >
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
-                  <ShieldCheck className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-secondary to-secondary/70 flex items-center justify-center shadow-lg">
+                  <ShieldCheck className="w-8 h-8 text-secondary-foreground" />
                 </div>
                 <span className="font-bold text-foreground">Faculty</span>
                 <span className="text-xs text-muted-foreground text-center">Manage students & assignments</span>
