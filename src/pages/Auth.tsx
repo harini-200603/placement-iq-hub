@@ -171,8 +171,8 @@ const Auth = () => {
                 onClick={() => setRoleChoice("student")}
                 className="flex flex-col items-center gap-3 p-6 rounded-xl border-2 border-border hover:border-primary bg-card hover:bg-primary/5 transition-all"
               >
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
-                  <BookOpen className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg">
+                  <BookOpen className="w-8 h-8 text-primary-foreground" />
                 </div>
                 <span className="font-bold text-foreground">Student</span>
                 <span className="text-xs text-muted-foreground text-center">Learn, practice & ace placements</span>
