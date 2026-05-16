@@ -194,6 +194,7 @@ const MockTest = () => {
     });
     setScore(correct);
     setSubmitted(true);
+    onMockCompleted(correct, questions.length);
 
     if (user && module) {
       // Save test attempt
