@@ -13,6 +13,7 @@ import {
   Lightbulb, Building2, RotateCcw, Brain, Trophy,
   BookOpen, ArrowRight,
 } from "lucide-react";
+import { onQuizCompleted } from "@/lib/gamification";
 
 interface QuizQuestion {
   question: string;
@@ -185,6 +186,7 @@ export const TopicQuiz = ({ subjectId, topicId, topicTitle }: TopicQuizProps) =>
       setCurrentIndex((p) => p + 1);
     } else {
       setShowResults(true);
+      onQuizCompleted(stats.correct, stats.total);
     }
   };
 
