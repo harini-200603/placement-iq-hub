@@ -161,7 +161,7 @@ const MockTest = () => {
 
   // Timer
   useEffect(() => {
-    if (submitted || loading || questions.length === 0) return;
+    if (submitted || loading || questions.length === 0 || !readyToStart) return;
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -173,7 +173,7 @@ const MockTest = () => {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [submitted, loading, questions.length]);
+  }, [submitted, loading, questions.length, readyToStart]);
 
   const handleSubmit = async () => {
     let correct = 0;
