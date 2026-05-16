@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { onCodingSolved } from "@/lib/gamification";
 
 interface CodingProblem {
   title: string;
@@ -109,6 +110,7 @@ const CodingPractice = () => {
       if (error) throw error;
       setResults(data.results);
       const allPassed = data.results.every((r: any) => r.passed);
+      if (allPassed) onCodingSolved(language);
       toast({
         title: allPassed ? "All test cases passed! 🎉" : "Some test cases failed",
         variant: allPassed ? "default" : "destructive",
