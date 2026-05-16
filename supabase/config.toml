@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.evaluate-code]
 verify_jwt = false
+
+[functions.company-placement-test]
+verify_jwt = false
