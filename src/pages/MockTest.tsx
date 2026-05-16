@@ -422,6 +422,28 @@ const MockTest = () => {
     );
   }
 
+  // Pre-test revision screen
+  if (!readyToStart) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="pt-24 pb-12 container mx-auto px-4 max-w-3xl">
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold text-foreground">{MODULE_LABELS[module || ""] || "Mock Test"}</h2>
+            <p className="text-sm text-muted-foreground">{questions.length} questions · 15 minutes · Fullscreen exam mode</p>
+          </div>
+          <PreTestRevision
+            module={module || "general"}
+            title={MODULE_LABELS[module || ""] || "Mock Test"}
+            cacheKey={`mock-${module}`}
+            onStart={() => setReadyToStart(true)}
+          />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   // Test-taking screen
   return (
     <div className="min-h-screen bg-background select-none" style={{ userSelect: "none" }}>
