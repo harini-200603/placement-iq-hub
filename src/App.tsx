@@ -19,7 +19,11 @@ import LearnSubject from "./pages/LearnSubject";
 import LearnTopic from "./pages/LearnTopic";
 import SmartTools from "./pages/SmartTools";
 import FacultyDashboard from "./pages/FacultyDashboard";
+import AllInOneTest from "./pages/AllInOneTest";
+import ProgrammingHub from "./pages/ProgrammingHub";
+import Achievements from "./pages/Achievements";
 import NotFound from "./pages/NotFound";
+import { GamificationToaster } from "@/components/gamification/GamificationToaster";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +34,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <GamificationToaster />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
@@ -46,6 +51,9 @@ const App = () => (
             <Route path="/learn/:subjectId/:topicId" element={<LearnTopic />} />
             <Route path="/smart-tools" element={<SmartTools />} />
             <Route path="/faculty" element={<FacultyDashboard />} />
+            <Route path="/all-in-one-test" element={<AllInOneTest />} />
+            <Route path="/programming" element={<ProgrammingHub />} />
+            <Route path="/achievements" element={<Achievements />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -13,6 +13,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { CertificateCard } from "@/components/CertificateCard";
+import { PreTestRevision } from "@/components/PreTestRevision";
+import { onMockCompleted } from "@/lib/gamification";
 import {
   Clock,
   ChevronLeft,
@@ -64,6 +66,7 @@ const MockTest = () => {
   const [showHint, setShowHint] = useState<Record<number, boolean>>({});
   const [certificateSaved, setCertificateSaved] = useState(false);
   const [examStarted, setExamStarted] = useState(false);
+  const [readyToStart, setReadyToStart] = useState(false);
   const { isFullscreen, enterFullscreen, exitFullscreen, exitAttempts } = useFullscreen(examStarted && !submitted);
 
   useEffect(() => {
@@ -81,13 +84,13 @@ const MockTest = () => {
     }
   }, [exitAttempts, submitted, toast]);
 
-  // Auto-enter fullscreen when questions load
+  // Auto-enter fullscreen ONLY after user clicks "Start"
   useEffect(() => {
-    if (questions.length > 0 && !submitted && !examStarted) {
+    if (questions.length > 0 && !submitted && !examStarted && readyToStart) {
       setExamStarted(true);
       enterFullscreen();
     }
-  }, [questions.length, submitted, examStarted, enterFullscreen]);
+  }, [questions.length, submitted, examStarted, readyToStart, enterFullscreen]);
 
   // Exit fullscreen on submit
   useEffect(() => {
@@ -158,7 +161,7 @@ const MockTest = () => {
 
   // Timer
   useEffect(() => {
-    if (submitted || loading || questions.length === 0) return;
+    if (submitted || loading || questions.length === 0 || !readyToStart) return;
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -170,7 +173,7 @@ const MockTest = () => {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [submitted, loading, questions.length]);
+  }, [submitted, loading, questions.length, readyToStart]);
 
   const handleSubmit = async () => {
     let correct = 0;
@@ -191,6 +194,7 @@ const MockTest = () => {
     });
     setScore(correct);
     setSubmitted(true);
+    onMockCompleted(correct, questions.length);
 
     if (user && module) {
       // Save test attempt
@@ -412,6 +416,28 @@ const MockTest = () => {
               <RotateCcw className="w-4 h-4 mr-2" /> Retake Test
             </Button>
           </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Pre-test revision screen
+  if (!readyToStart) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="pt-24 pb-12 container mx-auto px-4 max-w-3xl">
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold text-foreground">{MODULE_LABELS[module || ""] || "Mock Test"}</h2>
+            <p className="text-sm text-muted-foreground">{questions.length} questions · 15 minutes · Fullscreen exam mode</p>
+          </div>
+          <PreTestRevision
+            module={module || "general"}
+            title={MODULE_LABELS[module || ""] || "Mock Test"}
+            cacheKey={`mock-${module}`}
+            onStart={() => setReadyToStart(true)}
+          />
         </main>
         <Footer />
       </div>
