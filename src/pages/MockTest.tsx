@@ -13,6 +13,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { CertificateCard } from "@/components/CertificateCard";
+import { PreTestRevision } from "@/components/PreTestRevision";
+import { onMockCompleted } from "@/lib/gamification";
 import {
   Clock,
   ChevronLeft,
@@ -64,6 +66,7 @@ const MockTest = () => {
   const [showHint, setShowHint] = useState<Record<number, boolean>>({});
   const [certificateSaved, setCertificateSaved] = useState(false);
   const [examStarted, setExamStarted] = useState(false);
+  const [readyToStart, setReadyToStart] = useState(false);
   const { isFullscreen, enterFullscreen, exitFullscreen, exitAttempts } = useFullscreen(examStarted && !submitted);
 
   useEffect(() => {
@@ -81,13 +84,13 @@ const MockTest = () => {
     }
   }, [exitAttempts, submitted, toast]);
 
-  // Auto-enter fullscreen when questions load
+  // Auto-enter fullscreen ONLY after user clicks "Start"
   useEffect(() => {
-    if (questions.length > 0 && !submitted && !examStarted) {
+    if (questions.length > 0 && !submitted && !examStarted && readyToStart) {
       setExamStarted(true);
       enterFullscreen();
     }
-  }, [questions.length, submitted, examStarted, enterFullscreen]);
+  }, [questions.length, submitted, examStarted, readyToStart, enterFullscreen]);
 
   // Exit fullscreen on submit
   useEffect(() => {
