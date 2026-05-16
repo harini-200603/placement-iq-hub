@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { addToRevision } from "@/lib/smartFeatures";
+import { onTopicCompleted } from "@/lib/gamification";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
@@ -136,6 +137,7 @@ const LearnTopic = () => {
     localStorage.setItem(key, JSON.stringify(arr));
     setIsCompleted(newCompleted);
     if (newCompleted) {
+      onTopicCompleted();
       toast({ title: "✅ Topic marked as completed!" });
     }
 
