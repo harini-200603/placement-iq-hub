@@ -5,6 +5,7 @@ import { Menu, X, GraduationCap, LogOut, User, ShieldCheck } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { StreakBadge } from "@/components/gamification/StreakBadge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +17,10 @@ import {
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Learn", href: "/learn" },
+  { label: "Programming", href: "/programming" },
+  { label: "All-in-One Test", href: "/all-in-one-test", authRequired: true },
   { label: "Smart Tools", href: "/smart-tools" },
-  { label: "Certificates", href: "/certificates", authRequired: true },
+  { label: "Achievements", href: "/achievements", authRequired: true },
   { label: "Dashboard", href: "/dashboard", authRequired: true },
 ];
 
@@ -76,6 +79,7 @@ export const Header = () => {
 
           {/* Auth Buttons / User Menu */}
           <div className="hidden lg:flex items-center gap-3">
+            {user && <StreakBadge />}
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
