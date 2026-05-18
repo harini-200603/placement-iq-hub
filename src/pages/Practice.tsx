@@ -158,6 +158,23 @@ const Practice = () => {
     );
   }
 
+  if (!started) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="pt-24 pb-12 container mx-auto px-4 max-w-3xl">
+          <PreTestRevision
+            module={module || "general"}
+            title={MODULE_LABELS[module || ""] || "Practice Session"}
+            cacheKey={`practice-${module}`}
+            onStart={() => setStarted(true)}
+          />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
