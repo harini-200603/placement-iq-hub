@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { PreTestRevision } from "@/components/PreTestRevision";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -54,6 +55,7 @@ const Practice = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [answered, setAnswered] = useState(false);
   const [stats, setStats] = useState({ correct: 0, wrong: 0, total: 0 });
+  const [started, setStarted] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
@@ -150,6 +152,23 @@ const Practice = () => {
         <main className="pt-24 pb-12 container mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold text-foreground mb-4">No questions available</h2>
           <Button onClick={() => navigate(`/preparation/${module}`)}>Back to Preparation</Button>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!started) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="pt-24 pb-12 container mx-auto px-4 max-w-3xl">
+          <PreTestRevision
+            module={module || "general"}
+            title={MODULE_LABELS[module || ""] || "Practice Session"}
+            cacheKey={`practice-${module}`}
+            onStart={() => setStarted(true)}
+          />
         </main>
         <Footer />
       </div>
