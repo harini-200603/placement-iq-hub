@@ -29,14 +29,66 @@ interface CodingQ {
   approach: string; solution_code: string; language: string;
 }
 
-const COMPANIES = [
-  { id: "TCS", name: "TCS", color: "from-blue-600 to-indigo-700", desc: "NQT pattern · 10 Apt + 10 Reasoning + 2 Code" },
-  { id: "Infosys", name: "Infosys", color: "from-emerald-600 to-teal-700", desc: "InfyTQ style · Mixed sections + Pseudocode" },
-  { id: "Wipro", name: "Wipro", color: "from-violet-600 to-purple-700", desc: "Elite NLTH · Aptitude + Reasoning + Coding" },
-  { id: "Cognizant", name: "Cognizant", color: "from-cyan-600 to-blue-700", desc: "GenC pattern · Logical + Verbal heavy" },
-  { id: "Accenture", name: "Accenture", color: "from-rose-600 to-pink-700", desc: "Cognitive + Technical + Coding" },
-  { id: "Capgemini", name: "Capgemini", color: "from-orange-600 to-amber-700", desc: "Game-based + Pseudo-code + Coding" },
-];
+const COMPANY_CATEGORIES: Record<string, { id: string; name: string; color: string; desc: string }[]> = {
+  "Tier-1 IT Services": [
+    { id: "TCS", name: "TCS", color: "from-blue-600 to-indigo-700", desc: "NQT pattern · Apt + Reasoning + Verbal + Code" },
+    { id: "Infosys", name: "Infosys", color: "from-emerald-600 to-teal-700", desc: "InfyTQ style · Mixed sections + Pseudocode" },
+    { id: "Wipro", name: "Wipro", color: "from-violet-600 to-purple-700", desc: "Elite NLTH · Apt + Reasoning + Coding" },
+    { id: "HCL", name: "HCL Tech", color: "from-sky-600 to-blue-700", desc: "TechBee/HCL HIRE · Apt + Tech MCQs + Code" },
+    { id: "Tech Mahindra", name: "Tech Mahindra", color: "from-red-600 to-rose-700", desc: "Aptitude + Reasoning + Essay + Coding" },
+    { id: "LTIMindtree", name: "LTIMindtree", color: "from-indigo-600 to-blue-700", desc: "Apt + Logical + Verbal + Coding" },
+    { id: "Mphasis", name: "Mphasis", color: "from-fuchsia-600 to-purple-700", desc: "AMCAT-style · Apt + Tech + Code" },
+    { id: "Hexaware", name: "Hexaware", color: "from-teal-600 to-emerald-700", desc: "Aptitude + Reasoning + Coding" },
+  ],
+  "Consulting & Global Services": [
+    { id: "Cognizant", name: "Cognizant", color: "from-cyan-600 to-blue-700", desc: "GenC pattern · Logical + Verbal heavy" },
+    { id: "Accenture", name: "Accenture", color: "from-rose-600 to-pink-700", desc: "Cognitive + Technical + Coding" },
+    { id: "Capgemini", name: "Capgemini", color: "from-orange-600 to-amber-700", desc: "Game-based + Pseudo-code + Coding" },
+    { id: "Deloitte", name: "Deloitte", color: "from-green-700 to-emerald-800", desc: "Aptitude + Case + Verbal" },
+    { id: "PwC", name: "PwC India", color: "from-orange-700 to-red-700", desc: "Numerical + Logical + Verbal" },
+    { id: "KPMG", name: "KPMG India", color: "from-blue-700 to-indigo-800", desc: "Aptitude + Domain + Reasoning" },
+    { id: "EY", name: "EY (Ernst & Young)", color: "from-yellow-600 to-amber-700", desc: "Aptitude + Reasoning + Tech" },
+  ],
+  "Product / Tech (FAANG-India)": [
+    { id: "Amazon", name: "Amazon", color: "from-amber-600 to-orange-700", desc: "DSA-heavy · 2 Coding + MCQs + Aptitude" },
+    { id: "Microsoft", name: "Microsoft", color: "from-blue-600 to-cyan-700", desc: "DSA + OS/DBMS MCQs + Coding" },
+    { id: "Google", name: "Google", color: "from-red-500 to-yellow-500", desc: "Advanced DSA + Reasoning + Coding" },
+    { id: "Adobe", name: "Adobe", color: "from-red-600 to-rose-700", desc: "Aptitude + CS Fundamentals + Coding" },
+    { id: "Oracle", name: "Oracle", color: "from-red-700 to-orange-800", desc: "Apt + DBMS + Coding" },
+    { id: "SAP Labs", name: "SAP Labs", color: "from-blue-600 to-indigo-700", desc: "Aptitude + Tech MCQs + Coding" },
+    { id: "Salesforce", name: "Salesforce", color: "from-sky-500 to-blue-600", desc: "DSA + Apex MCQs + Coding" },
+    { id: "Cisco", name: "Cisco", color: "from-cyan-700 to-blue-800", desc: "Networking + Apt + Coding" },
+  ],
+  "Indian Product / Unicorns": [
+    { id: "Flipkart", name: "Flipkart", color: "from-yellow-500 to-blue-600", desc: "DSA + Aptitude + Coding" },
+    { id: "Paytm", name: "Paytm", color: "from-blue-500 to-cyan-600", desc: "Aptitude + Tech MCQs + Coding" },
+    { id: "Zomato", name: "Zomato", color: "from-red-500 to-rose-600", desc: "DSA + Product + Coding" },
+    { id: "Swiggy", name: "Swiggy", color: "from-orange-500 to-red-600", desc: "DSA + Apt + Coding" },
+    { id: "Ola", name: "Ola", color: "from-lime-600 to-green-700", desc: "Aptitude + DSA + Coding" },
+    { id: "PhonePe", name: "PhonePe", color: "from-purple-600 to-indigo-700", desc: "DSA + System Design Basics + Coding" },
+    { id: "Razorpay", name: "Razorpay", color: "from-blue-600 to-violet-700", desc: "DSA + Apt + Coding" },
+    { id: "Freshworks", name: "Freshworks", color: "from-green-600 to-teal-700", desc: "Aptitude + Tech + Coding" },
+    { id: "Zoho", name: "Zoho", color: "from-red-600 to-rose-700", desc: "Aptitude + Coding (multi-round)" },
+  ],
+  "Banking & Finance": [
+    { id: "Goldman Sachs", name: "Goldman Sachs", color: "from-yellow-600 to-amber-700", desc: "Quant + DSA + Coding" },
+    { id: "JP Morgan", name: "JP Morgan", color: "from-blue-800 to-indigo-900", desc: "Aptitude + Tech + Coding" },
+    { id: "Morgan Stanley", name: "Morgan Stanley", color: "from-sky-700 to-blue-800", desc: "Quant + DSA + Coding" },
+    { id: "HDFC Bank", name: "HDFC Bank", color: "from-blue-700 to-red-700", desc: "Aptitude + Banking + Reasoning" },
+    { id: "ICICI Bank", name: "ICICI Bank", color: "from-orange-700 to-red-800", desc: "Aptitude + Reasoning + Verbal" },
+    { id: "Axis Bank", name: "Axis Bank", color: "from-rose-700 to-pink-800", desc: "Aptitude + Reasoning + Verbal" },
+  ],
+  "Core / Engineering / PSU": [
+    { id: "L&T", name: "L&T", color: "from-blue-700 to-indigo-800", desc: "Aptitude + Technical (core) + Reasoning" },
+    { id: "Reliance", name: "Reliance Industries", color: "from-blue-800 to-cyan-900", desc: "Aptitude + Domain + Reasoning" },
+    { id: "Tata Steel", name: "Tata Steel", color: "from-slate-700 to-gray-800", desc: "Aptitude + Core Tech + Reasoning" },
+    { id: "ISRO", name: "ISRO", color: "from-orange-700 to-red-800", desc: "Technical + Aptitude" },
+    { id: "DRDO", name: "DRDO", color: "from-emerald-700 to-green-800", desc: "Technical + GK + Aptitude" },
+    { id: "BHEL", name: "BHEL", color: "from-yellow-700 to-orange-800", desc: "Technical + Aptitude + Reasoning" },
+    { id: "ONGC", name: "ONGC", color: "from-red-700 to-rose-800", desc: "Technical + Aptitude + Reasoning" },
+  ],
+};
+const COMPANIES = Object.values(COMPANY_CATEGORIES).flat();
 
 const TEST_DURATION = 45 * 60; // 45 minutes
 
@@ -115,23 +167,36 @@ const AllInOneTest = () => {
 
         {/* STAGE: SELECT */}
         {stage === "select" && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {COMPANIES.map((c, idx) => (
-              <motion.div key={c.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.04 }}>
-                <Card className="cursor-pointer h-full hover:shadow-lg transition-shadow border-border hover:border-primary/40" onClick={() => { setCompany(c.id); setStage("revise"); }}>
-                  <div className={`h-1.5 bg-gradient-to-r ${c.color}`} />
-                  <CardHeader>
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${c.color} text-white flex items-center justify-center mb-2`}>
-                      <Building2 className="w-6 h-6" />
-                    </div>
-                    <CardTitle className="text-lg">{c.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">{c.desc}</p>
-                    <Button variant="ghost" size="sm" className="mt-3 -ml-2">Start Simulation →</Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
+          <div className="space-y-8">
+            <div className="text-center text-sm text-muted-foreground">
+              Pick any company — AI generates a real exam-style test matching its actual pattern.
+            </div>
+            {Object.entries(COMPANY_CATEGORIES).map(([category, list]) => (
+              <section key={category}>
+                <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+                  <span className="w-1 h-5 bg-primary rounded-full" /> {category}
+                  <Badge variant="secondary" className="ml-1 text-[10px]">{list.length}</Badge>
+                </h2>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {list.map((c, idx) => (
+                    <motion.div key={c.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.03 }}>
+                      <Card className="cursor-pointer h-full hover:shadow-lg transition-shadow border-border hover:border-primary/40" onClick={() => { setCompany(c.id); setStage("revise"); }}>
+                        <div className={`h-1.5 bg-gradient-to-r ${c.color}`} />
+                        <CardHeader>
+                          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${c.color} text-white flex items-center justify-center mb-2`}>
+                            <Building2 className="w-6 h-6" />
+                          </div>
+                          <CardTitle className="text-lg">{c.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-muted-foreground">{c.desc}</p>
+                          <Button variant="ghost" size="sm" className="mt-3 -ml-2">Start Simulation →</Button>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         )}
