@@ -167,23 +167,36 @@ const AllInOneTest = () => {
 
         {/* STAGE: SELECT */}
         {stage === "select" && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {COMPANIES.map((c, idx) => (
-              <motion.div key={c.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.04 }}>
-                <Card className="cursor-pointer h-full hover:shadow-lg transition-shadow border-border hover:border-primary/40" onClick={() => { setCompany(c.id); setStage("revise"); }}>
-                  <div className={`h-1.5 bg-gradient-to-r ${c.color}`} />
-                  <CardHeader>
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${c.color} text-white flex items-center justify-center mb-2`}>
-                      <Building2 className="w-6 h-6" />
-                    </div>
-                    <CardTitle className="text-lg">{c.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">{c.desc}</p>
-                    <Button variant="ghost" size="sm" className="mt-3 -ml-2">Start Simulation →</Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
+          <div className="space-y-8">
+            <div className="text-center text-sm text-muted-foreground">
+              Pick any company — AI generates a real exam-style test matching its actual pattern.
+            </div>
+            {Object.entries(COMPANY_CATEGORIES).map(([category, list]) => (
+              <section key={category}>
+                <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+                  <span className="w-1 h-5 bg-primary rounded-full" /> {category}
+                  <Badge variant="secondary" className="ml-1 text-[10px]">{list.length}</Badge>
+                </h2>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {list.map((c, idx) => (
+                    <motion.div key={c.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.03 }}>
+                      <Card className="cursor-pointer h-full hover:shadow-lg transition-shadow border-border hover:border-primary/40" onClick={() => { setCompany(c.id); setStage("revise"); }}>
+                        <div className={`h-1.5 bg-gradient-to-r ${c.color}`} />
+                        <CardHeader>
+                          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${c.color} text-white flex items-center justify-center mb-2`}>
+                            <Building2 className="w-6 h-6" />
+                          </div>
+                          <CardTitle className="text-lg">{c.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-muted-foreground">{c.desc}</p>
+                          <Button variant="ghost" size="sm" className="mt-3 -ml-2">Start Simulation →</Button>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         )}
