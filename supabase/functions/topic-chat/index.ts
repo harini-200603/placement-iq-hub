@@ -47,7 +47,6 @@ Rules:
             { role: "system", content: systemPrompt },
             ...(messages || [{ role: "user", content: `Explain the topic "${topic}" comprehensively for placement preparation.` }]),
           ],
-          stream: true,
         }),
       }
     );
@@ -68,8 +67,10 @@ Rules:
       throw new Error("AI generation failed");
     }
 
-    return new Response(response.body, {
-      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
+    const json = await response.json();
+    const content = json.choices?.[0]?.message?.content || "";
+    return new Response(JSON.stringify({ content, response: content }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
     console.error("Error:", e);
