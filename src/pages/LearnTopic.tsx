@@ -52,9 +52,9 @@ const LearnTopic = () => {
     if (!subject || !topic) return;
     setLoading(true);
 
-    // Check cache first
+    // Check cache first (ignore stale error fallbacks)
     const cached = localStorage.getItem(CONTENT_KEY(subject.id, topic.id));
-    if (cached) {
+    if (cached && !cached.includes("Content could not be loaded") && !cached.includes("being generated")) {
       setContent(cached);
       setLoading(false);
       return;
