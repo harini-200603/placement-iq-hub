@@ -55,6 +55,7 @@ const Practice = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [answered, setAnswered] = useState(false);
   const [stats, setStats] = useState({ correct: 0, wrong: 0, total: 0 });
+  const [started, setStarted] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
