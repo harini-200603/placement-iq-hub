@@ -22,6 +22,9 @@ import FacultyDashboard from "./pages/FacultyDashboard";
 import AllInOneTest from "./pages/AllInOneTest";
 import ProgrammingHub from "./pages/ProgrammingHub";
 import Achievements from "./pages/Achievements";
+import Mentor from "./pages/Mentor";
+import MistakeNotebook from "./pages/MistakeNotebook";
+import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
 import { GamificationToaster } from "@/components/gamification/GamificationToaster";
 
