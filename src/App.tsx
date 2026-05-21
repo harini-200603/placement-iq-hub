@@ -57,6 +57,9 @@ const App = () => (
             <Route path="/all-in-one-test" element={<AllInOneTest />} />
             <Route path="/programming" element={<ProgrammingHub />} />
             <Route path="/achievements" element={<Achievements />} />
+            <Route path="/mentor" element={<Mentor />} />
+            <Route path="/mistakes" element={<MistakeNotebook />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
