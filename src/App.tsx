@@ -22,6 +22,9 @@ import FacultyDashboard from "./pages/FacultyDashboard";
 import AllInOneTest from "./pages/AllInOneTest";
 import ProgrammingHub from "./pages/ProgrammingHub";
 import Achievements from "./pages/Achievements";
+import Mentor from "./pages/Mentor";
+import MistakeNotebook from "./pages/MistakeNotebook";
+import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
 import { GamificationToaster } from "@/components/gamification/GamificationToaster";
 
@@ -54,6 +57,9 @@ const App = () => (
             <Route path="/all-in-one-test" element={<AllInOneTest />} />
             <Route path="/programming" element={<ProgrammingHub />} />
             <Route path="/achievements" element={<Achievements />} />
+            <Route path="/mentor" element={<Mentor />} />
+            <Route path="/mistakes" element={<MistakeNotebook />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
