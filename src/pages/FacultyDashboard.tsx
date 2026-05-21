@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FacultyAssignments } from "@/components/faculty/FacultyAssignments";
 import { FacultyAnalytics } from "@/components/faculty/FacultyAnalytics";
+import { FacultyReadiness } from "@/components/faculty/FacultyReadiness";
 import { motion } from "framer-motion";
 import {
   Loader2, ShieldCheck, Users, ClipboardList, BarChart3,
