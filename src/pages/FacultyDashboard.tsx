@@ -180,10 +180,14 @@ const FacultyDashboard = () => {
 
           {/* Main Tabs */}
           <Tabs defaultValue="analytics" className="space-y-6">
-            <TabsList className="grid w-full max-w-md grid-cols-2 h-12">
+            <TabsList className="grid w-full max-w-xl grid-cols-3 h-12">
               <TabsTrigger value="analytics" data-value="analytics" className="gap-2 font-semibold">
                 <BarChart3 className="w-4 h-4" />
-                Student Analytics
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger value="readiness" data-value="readiness" className="gap-2 font-semibold">
+                <Target className="w-4 h-4" />
+                Readiness
               </TabsTrigger>
               <TabsTrigger value="assignments" data-value="assignments" className="gap-2 font-semibold">
                 <ClipboardList className="w-4 h-4" />
@@ -193,6 +197,10 @@ const FacultyDashboard = () => {
 
             <TabsContent value="analytics">
               <FacultyAnalytics />
+            </TabsContent>
+
+            <TabsContent value="readiness">
+              <FacultyReadiness />
             </TabsContent>
 
             <TabsContent value="assignments">
