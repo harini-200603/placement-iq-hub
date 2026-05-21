@@ -17,8 +17,11 @@ import {
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Learn", href: "/learn" },
+  { label: "AI Mentor", href: "/mentor" },
   { label: "Programming", href: "/programming" },
   { label: "All-in-One Test", href: "/all-in-one-test", authRequired: true },
+  { label: "Mistakes", href: "/mistakes", authRequired: true },
+  { label: "Leaderboard", href: "/leaderboard", authRequired: true },
   { label: "Smart Tools", href: "/smart-tools" },
   { label: "Achievements", href: "/achievements", authRequired: true },
   { label: "Dashboard", href: "/dashboard", authRequired: true },
