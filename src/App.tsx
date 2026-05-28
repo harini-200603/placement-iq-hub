@@ -40,27 +40,33 @@ const App = () => (
         <AuthProvider>
           <GamificationToaster />
           <Routes>
+            {/* Public routes without sidebar */}
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/preparation/:module" element={<Preparation />} />
-            <Route path="/topic/:module/:topic" element={<TopicContent />} />
-            <Route path="/mock-test/:module" element={<MockTest />} />
-            <Route path="/practice/:module" element={<Practice />} />
-            <Route path="/coding-practice" element={<CodingPractice />} />
-            <Route path="/interview-practice" element={<InterviewPractice />} />
-            <Route path="/certificates" element={<Certificates />} />
-            <Route path="/learn" element={<Learn />} />
-            <Route path="/learn/:subjectId" element={<LearnSubject />} />
-            <Route path="/learn/:subjectId/:topicId" element={<LearnTopic />} />
-            <Route path="/smart-tools" element={<SmartTools />} />
-            <Route path="/faculty" element={<FacultyDashboard />} />
-            <Route path="/all-in-one-test" element={<AllInOneTest />} />
-            <Route path="/programming" element={<ProgrammingHub />} />
-            <Route path="/achievements" element={<Achievements />} />
-            <Route path="/mentor" element={<Mentor />} />
-            <Route path="/mistakes" element={<MistakeNotebook />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
+
+            {/* App routes with sidebar */}
+            <Route element={<SidebarLayout><div /></SidebarLayout>}>
+              <Route path="/dashboard" element={<SidebarLayout><Dashboard /></SidebarLayout>} />
+              <Route path="/preparation/:module" element={<SidebarLayout><Preparation /></SidebarLayout>} />
+              <Route path="/topic/:module/:topic" element={<SidebarLayout><TopicContent /></SidebarLayout>} />
+              <Route path="/mock-test/:module" element={<SidebarLayout><MockTest /></SidebarLayout>} />
+              <Route path="/practice/:module" element={<SidebarLayout><Practice /></SidebarLayout>} />
+              <Route path="/coding-practice" element={<SidebarLayout><CodingPractice /></SidebarLayout>} />
+              <Route path="/interview-practice" element={<SidebarLayout><InterviewPractice /></SidebarLayout>} />
+              <Route path="/certificates" element={<SidebarLayout><Certificates /></SidebarLayout>} />
+              <Route path="/learn" element={<SidebarLayout><Learn /></SidebarLayout>} />
+              <Route path="/learn/:subjectId" element={<SidebarLayout><LearnSubject /></SidebarLayout>} />
+              <Route path="/learn/:subjectId/:topicId" element={<SidebarLayout><LearnTopic /></SidebarLayout>} />
+              <Route path="/smart-tools" element={<SidebarLayout><SmartTools /></SidebarLayout>} />
+              <Route path="/faculty" element={<SidebarLayout><FacultyDashboard /></SidebarLayout>} />
+              <Route path="/all-in-one-test" element={<SidebarLayout><AllInOneTest /></SidebarLayout>} />
+              <Route path="/programming" element={<SidebarLayout><ProgrammingHub /></SidebarLayout>} />
+              <Route path="/achievements" element={<SidebarLayout><Achievements /></SidebarLayout>} />
+              <Route path="/mentor" element={<SidebarLayout><Mentor /></SidebarLayout>} />
+              <Route path="/mistakes" element={<SidebarLayout><MistakeNotebook /></SidebarLayout>} />
+              <Route path="/leaderboard" element={<SidebarLayout><Leaderboard /></SidebarLayout>} />
+            </Route>
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
