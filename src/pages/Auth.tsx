@@ -196,7 +196,7 @@ const Auth = () => {
     setErrors({}); setIsLoading(true);
     try {
       const data = signinSchema.parse(signin);
-      const { error } = await supabase.auth.signInWithPassword(data);
+      const { error } = await supabase.auth.signInWithPassword({ email: data.email, password: data.password });
       if (error) throw error;
       toast({ title: "Welcome back! 🎉", description: "You're signed in." });
       navigate("/");
