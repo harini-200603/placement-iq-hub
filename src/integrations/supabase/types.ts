@@ -50,6 +50,39 @@ export type Database = {
         }
         Relationships: []
       }
+      faculty_announcements: {
+        Row: {
+          body: string | null
+          category: string
+          created_at: string
+          faculty_id: string
+          id: string
+          pinned: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          category?: string
+          created_at?: string
+          faculty_id: string
+          id?: string
+          pinned?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          category?: string
+          created_at?: string
+          faculty_id?: string
+          id?: string
+          pinned?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mock_tests: {
         Row: {
           created_at: string
@@ -77,36 +110,96 @@ export type Database = {
         }
         Relationships: []
       }
+      placement_drives: {
+        Row: {
+          company: string
+          created_at: string
+          description: string | null
+          drive_date: string | null
+          eligibility_cgpa: number | null
+          faculty_id: string
+          id: string
+          min_readiness: number | null
+          package_lpa: number | null
+          role_title: string | null
+          shortlisted_ids: string[] | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          description?: string | null
+          drive_date?: string | null
+          eligibility_cgpa?: number | null
+          faculty_id: string
+          id?: string
+          min_readiness?: number | null
+          package_lpa?: number | null
+          role_title?: string | null
+          shortlisted_ids?: string[] | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          description?: string | null
+          drive_date?: string | null
+          eligibility_cgpa?: number | null
+          faculty_id?: string
+          id?: string
+          min_readiness?: number | null
+          package_lpa?: number | null
+          role_title?: string | null
+          shortlisted_ids?: string[] | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
+          college: string | null
           created_at: string
+          department: string | null
           full_name: string
           id: string
+          phone: string | null
           register_number: string | null
           role: Database["public"]["Enums"]["user_role"]
+          state: string | null
           updated_at: string
           user_id: string
           username: string
         }
         Insert: {
           avatar_url?: string | null
+          college?: string | null
           created_at?: string
+          department?: string | null
           full_name: string
           id?: string
+          phone?: string | null
           register_number?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          state?: string | null
           updated_at?: string
           user_id: string
           username: string
         }
         Update: {
           avatar_url?: string | null
+          college?: string | null
           created_at?: string
+          department?: string | null
           full_name?: string
           id?: string
+          phone?: string | null
           register_number?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          state?: string | null
           updated_at?: string
           user_id?: string
           username?: string
