@@ -83,7 +83,7 @@ export const FacultyAIInsights = ({ data }: Props) => {
           <CardContent className="pt-5 space-y-4">
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-4 flex-wrap">
               <div className="relative w-20 h-20 flex items-center justify-center">
-                <svg className="w-20 h-20 -rotate-90"><circle cx="40" cy="40" r="34" fill="none" stroke="hsl(var(--muted))" strokeWidth="7" /><circle cx="40" cy="40" r="34" fill="none" stroke="hsl(var(--primary))" strokeWidth="7" strokelinecap="round" strokeDasharray={`${(health.health_score / 100) * 213} 213`} /></svg>
+                <svg className="w-20 h-20 -rotate-90"><circle cx="40" cy="40" r="34" fill="none" stroke="hsl(var(--muted))" strokeWidth="7" /><circle cx="40" cy="40" r="34" fill="none" stroke="hsl(var(--primary))" strokeWidth="7" strokeLinecap="round" strokeDasharray={`${(health.health_score / 100) * 213} 213`} /></svg>
                 <span className="absolute text-lg font-bold">{health.health_score}</span>
               </div>
               <div className="flex-1 min-w-[200px]">
