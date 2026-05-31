@@ -6,17 +6,22 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FacultyAssignments } from "@/components/faculty/FacultyAssignments";
 import { FacultyAnalytics } from "@/components/faculty/FacultyAnalytics";
 import { FacultyReadiness } from "@/components/faculty/FacultyReadiness";
+import { FacultyControlTower } from "@/components/faculty/FacultyControlTower";
+import { FacultyAIInsights } from "@/components/faculty/FacultyAIInsights";
+import { FacultyStudentAnalyzer } from "@/components/faculty/FacultyStudentAnalyzer";
+import { FacultyAnnouncements } from "@/components/faculty/FacultyAnnouncements";
+import { FacultyReports } from "@/components/faculty/FacultyReports";
+import { loadFacultyData, FacultyData } from "@/lib/facultyAnalytics";
 import { motion } from "framer-motion";
 import {
-  Loader2, ShieldCheck, Users, ClipboardList, BarChart3,
-  TrendingUp, BookOpen, Award, Sparkles, GraduationCap,
-  Target, Flame, Calendar, Bell,
+  Loader2, Users, ClipboardList, BarChart3, TrendingUp, Sparkles,
+  Target, Flame, Radar, Brain, Megaphone, FileBarChart, Clock,
+  Activity, GraduationCap, RefreshCw,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 const FacultyDashboard = () => {
@@ -25,36 +30,32 @@ const FacultyDashboard = () => {
   const { toast } = useToast();
   const [isFaculty, setIsFaculty] = useState(false);
   const [checking, setChecking] = useState(true);
-  const [stats, setStats] = useState({ students: 0, assignments: 0, avgScore: 0, completionRate: 0 });
   const [facultyName, setFacultyName] = useState("");
+  const [college, setCollege] = useState("");
+  const [data, setData] = useState<FacultyData | null>(null);
+  const [dataLoading, setDataLoading] = useState(false);
+
+  const refresh = async () => {
+    setDataLoading(true);
+    try {
+      setData(await loadFacultyData());
+    } catch {
+      toast({ title: "Failed to load analytics", variant: "destructive" });
+    } finally {
+      setDataLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (authLoading) return;
     if (!user) { navigate("/auth"); return; }
-
     const checkRole = async () => {
-      const { data } = await supabase.from("profiles").select("role, full_name").eq("user_id", user.id).single();
-      if (data?.role === "faculty") {
+      const { data: prof } = await supabase.from("profiles").select("role, full_name, college").eq("user_id", user.id).single();
+      if (prof?.role === "faculty") {
         setIsFaculty(true);
-        setFacultyName(data.full_name || "Professor");
-        // Fetch quick stats
-        const [studentsRes, assignmentsRes, progressRes] = await Promise.all([
-          supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "student"),
-          supabase.from("question_assignments").select("id", { count: "exact", head: true }).eq("faculty_id", user.id),
-          supabase.from("student_progress").select("quiz_score, quiz_total, status"),
-        ]);
-        const progressData = progressRes.data || [];
-        const withScores = progressData.filter(p => p.quiz_score != null && p.quiz_total);
-        const avgScore = withScores.length > 0 ? Math.round(withScores.reduce((s, p) => s + ((p.quiz_score! / p.quiz_total!) * 100), 0) / withScores.length) : 0;
-        const completed = progressData.filter(p => p.status === "completed").length;
-        const completionRate = progressData.length > 0 ? Math.round((completed / progressData.length) * 100) : 0;
-
-        setStats({
-          students: studentsRes.count || 0,
-          assignments: assignmentsRes.count || 0,
-          avgScore,
-          completionRate,
-        });
+        setFacultyName(prof.full_name || "Professor");
+        setCollege(prof.college || "");
+        await refresh();
       } else {
         toast({ title: "Access denied", description: "Faculty account required", variant: "destructive" });
         navigate("/dashboard");
@@ -62,150 +63,105 @@ const FacultyDashboard = () => {
       setChecking(false);
     };
     checkRole();
-  }, [user, authLoading, navigate, toast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, authLoading]);
 
   if (authLoading || checking) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="pt-24 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </main>
+        <main className="pt-24 flex items-center justify-center min-h-[60vh]"><Loader2 className="w-8 h-8 animate-spin text-primary" /></main>
       </div>
     );
   }
-
   if (!isFaculty) return null;
 
+  const t = data?.totals;
   const quickStats = [
-    { icon: Users, label: "Total Students", value: stats.students.toString(), color: "from-blue-500 to-indigo-600", bgColor: "bg-blue-50" },
-    { icon: ClipboardList, label: "Assignments", value: stats.assignments.toString(), color: "from-emerald-500 to-teal-600", bgColor: "bg-emerald-50" },
-    { icon: Target, label: "Avg Score", value: `${stats.avgScore}%`, color: "from-amber-500 to-orange-600", bgColor: "bg-amber-50" },
-    { icon: TrendingUp, label: "Completion", value: `${stats.completionRate}%`, color: "from-violet-500 to-purple-600", bgColor: "bg-violet-50" },
+    { icon: Users, label: "Total Students", value: t?.students ?? 0, color: "from-blue-500 to-indigo-600" },
+    { icon: Activity, label: "Active Learners", value: t?.activeLearners ?? 0, color: "from-emerald-500 to-teal-600" },
+    { icon: Target, label: "Placement Readiness", value: `${t?.avgReadiness ?? 0}%`, color: "from-violet-500 to-purple-600" },
+    { icon: BarChart3, label: "Avg Test Score", value: `${t?.avgScore ?? 0}%`, color: "from-amber-500 to-orange-600" },
+    { icon: ClipboardList, label: "Tests Taken", value: t?.testsTaken ?? 0, color: "from-pink-500 to-rose-600" },
+    { icon: Clock, label: "Learning Hours", value: `${t?.learningHours ?? 0}h`, color: "from-cyan-500 to-blue-600" },
   ];
 
   const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good Morning";
-    if (hour < 17) return "Good Afternoon";
-    return "Good Evening";
+    const h = new Date().getHours();
+    return h < 12 ? "Good Morning" : h < 17 ? "Good Afternoon" : "Good Evening";
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main className="pt-24 pb-16">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="container mx-auto px-4 max-w-7xl">
           {/* Welcome Banner */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8 relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/90 to-primary p-8 text-primary-foreground"
-          >
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-20 w-32 h-32 bg-white/5 rounded-full translate-y-1/2" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-5 h-5" />
-                <span className="text-sm font-medium opacity-90">Faculty Portal</span>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            className="mb-6 relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary to-secondary p-8 text-primary-foreground">
+            <div className="absolute top-0 right-0 w-72 h-72 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl" />
+            <div className="absolute bottom-0 left-20 w-40 h-40 bg-white/5 rounded-full translate-y-1/2" />
+            <div className="relative z-10 flex items-start justify-between flex-wrap gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <GraduationCap className="w-5 h-5" />
+                  <span className="text-sm font-medium opacity-90">AI Placement Command Center{college ? ` · ${college}` : ""}</span>
+                </div>
+                <h1 className="text-3xl md:text-4xl font-bold mb-2">{getGreeting()}, {facultyName}! 👋</h1>
+                <p className="text-primary-foreground/80 max-w-xl">Enterprise placement intelligence — analytics, AI insights, drives & reports in one control tower.</p>
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2">{getGreeting()}, {facultyName}! 👋</h1>
-              <p className="text-primary-foreground/80 max-w-lg">
-                Manage your students, create assignments, and track learning progress — all from one place.
-              </p>
+              <Button variant="secondary" onClick={refresh} disabled={dataLoading} className="gap-2 shrink-0">
+                {dataLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />} Refresh
+              </Button>
             </div>
           </motion.div>
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {quickStats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * i }}
-              >
-                <Card className="border-border hover:shadow-md transition-shadow">
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-md`}>
-                      <stat.icon className="w-6 h-6 text-white" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+            {quickStats.map((s, i) => (
+              <motion.div key={s.label} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}>
+                <Card className="border-border hover:shadow-md transition-shadow overflow-hidden">
+                  <CardContent className="p-4">
+                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-md mb-2`}>
+                      <s.icon className="w-5 h-5 text-white" />
                     </div>
-                    <div>
-                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                      <p className="text-xs text-muted-foreground">{stat.label}</p>
-                    </div>
+                    <p className="text-2xl font-bold text-foreground">{s.value}</p>
+                    <p className="text-xs text-muted-foreground">{s.label}</p>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
           </div>
 
-          {/* Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mb-8"
-          >
-            <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-              <Flame className="w-5 h-5 text-primary" />
-              Quick Actions
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                { icon: ClipboardList, label: "New Assignment", desc: "Create a task", tab: "assignments" },
-                { icon: BarChart3, label: "View Analytics", desc: "Student progress", tab: "analytics" },
-                { icon: Users, label: "Student List", desc: "Track all students", tab: "analytics" },
-                { icon: Award, label: "Leaderboard", desc: "Top performers", tab: "analytics" },
-              ].map((action) => (
-                <Card
-                  key={action.label}
-                  className="cursor-pointer hover:border-primary/50 hover:shadow-md transition-all group"
-                  onClick={() => {
-                    const tabEl = document.querySelector(`[data-value="${action.tab}"]`) as HTMLButtonElement;
-                    if (tabEl) tabEl.click();
-                  }}
-                >
-                  <CardContent className="p-4 text-center">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-2 group-hover:bg-primary/20 transition-colors">
-                      <action.icon className="w-5 h-5 text-primary" />
-                    </div>
-                    <p className="font-semibold text-sm text-foreground">{action.label}</p>
-                    <p className="text-xs text-muted-foreground">{action.desc}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </motion.div>
-
           {/* Main Tabs */}
-          <Tabs defaultValue="analytics" className="space-y-6">
-            <TabsList className="grid w-full max-w-xl grid-cols-3 h-12">
-              <TabsTrigger value="analytics" data-value="analytics" className="gap-2 font-semibold">
-                <BarChart3 className="w-4 h-4" />
-                Analytics
-              </TabsTrigger>
-              <TabsTrigger value="readiness" data-value="readiness" className="gap-2 font-semibold">
-                <Target className="w-4 h-4" />
-                Readiness
-              </TabsTrigger>
-              <TabsTrigger value="assignments" data-value="assignments" className="gap-2 font-semibold">
-                <ClipboardList className="w-4 h-4" />
-                Assignments
-              </TabsTrigger>
-            </TabsList>
+          <Tabs defaultValue="tower" className="space-y-6">
+            <div className="overflow-x-auto -mx-4 px-4">
+              <TabsList className="inline-flex h-12 w-auto">
+                <TabsTrigger value="tower" className="gap-2"><Radar className="w-4 h-4" /> Control Tower</TabsTrigger>
+                <TabsTrigger value="ai" className="gap-2"><Sparkles className="w-4 h-4" /> AI Insights</TabsTrigger>
+                <TabsTrigger value="analyzer" className="gap-2"><Brain className="w-4 h-4" /> Student Analyzer</TabsTrigger>
+                <TabsTrigger value="analytics" className="gap-2"><BarChart3 className="w-4 h-4" /> Analytics</TabsTrigger>
+                <TabsTrigger value="readiness" className="gap-2"><Target className="w-4 h-4" /> Readiness</TabsTrigger>
+                <TabsTrigger value="assignments" className="gap-2"><ClipboardList className="w-4 h-4" /> Tests</TabsTrigger>
+                <TabsTrigger value="drives" className="gap-2"><Megaphone className="w-4 h-4" /> Drives</TabsTrigger>
+                <TabsTrigger value="reports" className="gap-2"><FileBarChart className="w-4 h-4" /> Reports</TabsTrigger>
+              </TabsList>
+            </div>
 
-            <TabsContent value="analytics">
-              <FacultyAnalytics />
-            </TabsContent>
-
-            <TabsContent value="readiness">
-              <FacultyReadiness />
-            </TabsContent>
-
-            <TabsContent value="assignments">
-              <FacultyAssignments facultyId={user!.id} />
-            </TabsContent>
+            {dataLoading && !data ? (
+              <div className="py-20 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+            ) : (
+              <>
+                <TabsContent value="tower">{data && <FacultyControlTower data={data} />}</TabsContent>
+                <TabsContent value="ai">{data && <FacultyAIInsights data={data} />}</TabsContent>
+                <TabsContent value="analyzer">{data && <FacultyStudentAnalyzer data={data} />}</TabsContent>
+                <TabsContent value="analytics"><FacultyAnalytics /></TabsContent>
+                <TabsContent value="readiness"><FacultyReadiness /></TabsContent>
+                <TabsContent value="assignments"><FacultyAssignments facultyId={user!.id} /></TabsContent>
+                <TabsContent value="drives"><FacultyAnnouncements facultyId={user!.id} /></TabsContent>
+                <TabsContent value="reports">{data && <FacultyReports data={data} collegeName={college} />}</TabsContent>
+              </>
+            )}
           </Tabs>
         </div>
       </main>
