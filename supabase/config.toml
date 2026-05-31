@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.company-placement-test]
 verify_jwt = false
+
+[functions.faculty-ai-insights]
+verify_jwt = false
