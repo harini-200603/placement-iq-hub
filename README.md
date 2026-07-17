@@ -1,73 +1,122 @@
-# Welcome to your Lovable project
+# PlacementIQ
 
-## Project info
+AI-powered placement preparation platform for Indian college students, with a dedicated faculty portal for placement coordinators and colleges.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+**Live app:** https://placementiq.lovable.app
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+### For students
+- Adaptive AI mock tests (aptitude, reasoning, verbal, technical, coding)
+- Company-specific simulations (TCS, Infosys, Wipro, Accenture, and more)
+- AI Mistake Notebook — every wrong answer is saved with an AI explanation
+- AI chat assistant with persistent history across devices
+- Daily streaks, badges, and achievements
+- Company readiness scoring with strengths / gaps breakdown
+- Study-time and attendance tracking
+- Real-time notifications
+- English / Hindi UI toggle
+- Mobile-first PWA + Capacitor-ready native shell
 
-**Use Lovable**
+### For faculty
+- Batch-level readiness dashboard and analytics
+- AI-generated insights, per-student deep dives, and PDF reports
+- Assignment creation, drives, and announcements
+- Attendance marking and study-time visibility
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Tech stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend:** React 18, Vite 5, TypeScript, Tailwind CSS v3, shadcn/ui
+- **Backend:** Lovable Cloud (managed Supabase — Postgres, Auth, Storage, Edge Functions, Realtime)
+- **AI:** Lovable AI Gateway (Gemini) via Supabase Edge Functions
+- **Mobile:** Capacitor
+- **Charts / PDF:** Recharts, jsPDF, jspdf-autotable
 
-**Use your preferred IDE**
+## Project structure
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+src/
+├── components/       # Reusable UI + feature components
+│   ├── ui/           # shadcn primitives
+│   └── faculty/      # Faculty portal modules
+├── pages/            # Route-level pages
+├── hooks/            # Custom React hooks
+├── lib/              # Analytics, utils
+├── integrations/
+│   └── supabase/     # Auto-generated client + types (do not edit)
+└── assets/           # Images, icons
+supabase/
+├── functions/        # Deno Edge Functions (AI, evaluation, insights)
+├── migrations/       # SQL schema history
+└── config.toml       # Function config
+.github/workflows/    # CI pipeline
 ```
 
-**Edit a file directly in GitHub**
+## Local development
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+bun install
+cp .env.example .env    # fill in your Cloud project values
+bun run dev
+```
 
-**Use GitHub Codespaces**
+Open http://localhost:8080
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Database
 
-## What technologies are used for this project?
+All schema changes live in `supabase/migrations/`. Core tables:
 
-This project is built with:
+| Table | Purpose |
+|-------|---------|
+| `profiles` | Student / faculty profile data |
+| `questions`, `question_assignments` | AI-generated question bank + assignments |
+| `test_attempts`, `mock_tests` | Test scores and history |
+| `student_progress` | Learning progress per topic |
+| `ai_chat_history` | Persistent AI conversations |
+| `mistake_notebook` | Wrong answers with AI explanations |
+| `attendance`, `study_sessions` | Attendance and learning time |
+| `company_readiness` | Per-company readiness scores |
+| `badges`, `user_badges`, `streaks` | Achievements and gamification |
+| `notifications` | Real-time in-app notifications |
+| `placement_drives`, `faculty_announcements` | Faculty broadcasts |
+| `certificates` | Awarded certificates |
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Row-Level Security is enabled on every table. Students see only their own rows; faculty read all student data via the `is_faculty(uuid)` security-definer helper.
 
-## How can I deploy this project?
+## Authentication
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+- Email + password with HIBP leaked-password protection
+- Role-based access (student / faculty) selected at signup
+- Password reset via `/reset-password`
+- JWT-backed sessions handled by Supabase Auth
 
-## Can I connect a custom domain to my Lovable project?
+## CI/CD
 
-Yes, you can!
+`.github/workflows/ci.yml` runs on every push and PR to `main`:
+1. Install dependencies (Bun)
+2. TypeScript type check
+3. Lint
+4. Production build
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Add these repository secrets in GitHub → Settings → Secrets and variables → Actions:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+- `VITE_SUPABASE_PROJECT_ID`
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Deployment
+
+- **Preview builds:** every change previews automatically in Lovable
+- **Production:** click *Publish* in the Lovable editor, or deploy the built `dist/` folder to any static host (Vercel, Netlify, Cloudflare Pages)
+- **Mobile:** `bunx cap sync` after building to package for iOS / Android
+
+## Contributing
+
+1. Fork and clone
+2. `bun install`
+3. Create a feature branch
+4. Commit with clear messages
+5. Open a PR
+
+## License
+
+Proprietary — all rights reserved.
