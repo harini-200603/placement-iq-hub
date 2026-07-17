@@ -14,6 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_chat_history: {
+        Row: {
+          content: string
+          context: string | null
+          created_at: string
+          id: string
+          role: string
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          context?: string | null
+          created_at?: string
+          id?: string
+          role: string
+          thread_id?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          context?: string | null
+          created_at?: string
+          id?: string
+          role?: string
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      attendance: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          marked_by: string | null
+          notes: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          id?: string
+          marked_by?: string | null
+          notes?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          marked_by?: string | null
+          notes?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      badges: {
+        Row: {
+          code: string
+          created_at: string
+          criteria: Json | null
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          criteria?: Json | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          criteria?: Json | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       certificates: {
         Row: {
           completed_at: string
@@ -50,6 +140,39 @@ export type Database = {
         }
         Relationships: []
       }
+      company_readiness: {
+        Row: {
+          company: string
+          gaps: Json | null
+          id: string
+          last_evaluated_at: string
+          readiness_score: number
+          strengths: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company: string
+          gaps?: Json | null
+          id?: string
+          last_evaluated_at?: string
+          readiness_score?: number
+          strengths?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company?: string
+          gaps?: Json | null
+          id?: string
+          last_evaluated_at?: string
+          readiness_score?: number
+          strengths?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       faculty_announcements: {
         Row: {
           body: string | null
@@ -83,6 +206,51 @@ export type Database = {
         }
         Relationships: []
       }
+      mistake_notebook: {
+        Row: {
+          correct_answer: string | null
+          created_at: string
+          difficulty: string | null
+          explanation: string | null
+          id: string
+          question: string
+          reviewed: boolean
+          subject: string
+          topic: string | null
+          updated_at: string
+          user_answer: string | null
+          user_id: string
+        }
+        Insert: {
+          correct_answer?: string | null
+          created_at?: string
+          difficulty?: string | null
+          explanation?: string | null
+          id?: string
+          question: string
+          reviewed?: boolean
+          subject: string
+          topic?: string | null
+          updated_at?: string
+          user_answer?: string | null
+          user_id: string
+        }
+        Update: {
+          correct_answer?: string | null
+          created_at?: string
+          difficulty?: string | null
+          explanation?: string | null
+          id?: string
+          question?: string
+          reviewed?: boolean
+          subject?: string
+          topic?: string | null
+          updated_at?: string
+          user_answer?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       mock_tests: {
         Row: {
           created_at: string
@@ -107,6 +275,39 @@ export type Database = {
           module?: string
           title?: string
           total_questions?: number
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -290,6 +491,30 @@ export type Database = {
         }
         Relationships: []
       }
+      streaks: {
+        Row: {
+          current_streak: number
+          last_active_date: string | null
+          longest_streak: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          current_streak?: number
+          last_active_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          current_streak?: number
+          last_active_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       student_progress: {
         Row: {
           completed_at: string | null
@@ -328,6 +553,39 @@ export type Database = {
           time_spent_seconds?: number | null
           topic_id?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      study_sessions: {
+        Row: {
+          created_at: string
+          duration_minutes: number
+          ended_at: string | null
+          id: string
+          started_at: string
+          subject: string
+          topic: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_minutes?: number
+          ended_at?: string | null
+          id?: string
+          started_at?: string
+          subject: string
+          topic?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_minutes?: number
+          ended_at?: string | null
+          id?: string
+          started_at?: string
+          subject?: string
+          topic?: string | null
           user_id?: string
         }
         Relationships: []
@@ -376,12 +634,41 @@ export type Database = {
           },
         ]
       }
+      user_badges: {
+        Row: {
+          awarded_at: string
+          badge_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          awarded_at?: string
+          badge_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          awarded_at?: string
+          badge_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_faculty: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       user_role: "student" | "faculty"
