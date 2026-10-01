@@ -120,3 +120,8 @@ Add these repository secrets in GitHub → Settings → Secrets and variables �
 ## License
 
 Proprietary — all rights reserved.
+## Team Contributions
+###Harishanandakumar
+###ANGELIN B
+-Contributed to the development and testing of the PlacementIQ platform.
+-Worked on improving the user experience and project documentation.
